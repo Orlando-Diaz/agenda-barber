@@ -9,7 +9,7 @@ public record ReservarCitaRequest(
 
 [ApiController]
 [Route("api/barberias/{slug}/citas")]
-public class CitasController(ReservarCita reservarCita) : ControllerBase
+public class CitasController(ReservarCita reservarCita, CambiarEstadoCita cambiarEstado) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Reservar(string slug, ReservarCitaRequest request, CancellationToken ct)
@@ -33,6 +33,38 @@ public class CitasController(ReservarCita reservarCita) : ControllerBase
         catch (HoraNoDisponibleException ex)
         {
             return Conflict(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("{citaId:guid}/confirmar")]
+    public Task<IActionResult> Confirmar(string slug, Guid citaId, CancellationToken ct) =>
+        Cambiar(slug, citaId, AccionCita.Confirmar, ct);
+
+    [HttpPost("{citaId:guid}/cancelar")]
+    public Task<IActionResult> Cancelar(string slug, Guid citaId, CancellationToken ct) =>
+        Cambiar(slug, citaId, AccionCita.Cancelar, ct);
+
+    [HttpPost("{citaId:guid}/atendida")]
+    public Task<IActionResult> Atendida(string slug, Guid citaId, CancellationToken ct) =>
+        Cambiar(slug, citaId, AccionCita.Atendida, ct);
+
+    [HttpPost("{citaId:guid}/no-asistio")]
+    public Task<IActionResult> NoAsistio(string slug, Guid citaId, CancellationToken ct) =>
+        Cambiar(slug, citaId, AccionCita.NoAsistio, ct);
+
+    private async Task<IActionResult> Cambiar(string slug, Guid citaId, AccionCita accion, CancellationToken ct)
+    {
+        try
+        {
+            var cita = await cambiarEstado.EjecutarAsync(slug, citaId, accion, ct);
+            if (cita is null)
+                return NotFound(new { error = "No encontramos la barbería o la cita." });
+
+            return Ok(new { cita.Id, Estado = cita.Estado.ToString() });
+        }
+        catch (DomainException ex)
+        {
+            return BadRequest(new { error = ex.Message });
         }
     }
 }

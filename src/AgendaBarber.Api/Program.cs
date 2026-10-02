@@ -20,6 +20,8 @@ builder.Services.AddScoped<ListarBarberos>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<ConsultarDisponibilidad>();
 builder.Services.AddScoped<ReservarCita>();
+builder.Services.AddScoped<ConsultarAgenda>();
+builder.Services.AddScoped<CambiarEstadoCita>();
 
 var app = builder.Build();
 

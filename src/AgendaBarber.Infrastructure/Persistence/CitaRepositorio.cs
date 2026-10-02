@@ -28,4 +28,22 @@ public class CitaRepositorio(AgendaDbContext db) : ICitaRepositorio
             throw new HoraNoDisponibleException();
         }
     }
+
+    public async Task<IReadOnlyList<CitaDetalle>> ListarAgendaAsync(
+        Guid barberiaId, DateTime desdeUtc, DateTime hastaUtc, CancellationToken ct = default) =>
+        await (
+            from c in db.Citas.AsNoTracking()
+            join b in db.Barberos on c.BarberoId equals b.Id
+            join s in db.Servicios on c.ServicioId equals s.Id
+            where c.BarberiaId == barberiaId && c.InicioUtc >= desdeUtc && c.InicioUtc < hastaUtc
+            orderby c.InicioUtc
+            select new CitaDetalle(
+                c.Id, c.InicioUtc, c.FinUtc, b.Nombre, s.Nombre,
+                c.ClienteNombre, c.ClienteTelefono, c.Precio, c.Estado)
+        ).ToListAsync(ct);
+
+    public Task<Cita?> ObtenerAsync(Guid barberiaId, Guid citaId, CancellationToken ct = default) =>
+        db.Citas.FirstOrDefaultAsync(c => c.Id == citaId && c.BarberiaId == barberiaId, ct);
+
+    public Task GuardarCambiosAsync(CancellationToken ct = default) => db.SaveChangesAsync(ct);
 }
