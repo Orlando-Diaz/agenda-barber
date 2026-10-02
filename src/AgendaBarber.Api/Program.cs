@@ -3,6 +3,7 @@ using AgendaBarber.Application.Barberias;
 using AgendaBarber.Application.Servicios;
 using AgendaBarber.Application.Barberos;
 using AgendaBarber.Application.Disponibilidad;
+using AgendaBarber.Application.Citas;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddScoped<AgregarHorarioBarbero>();
 builder.Services.AddScoped<ListarBarberos>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<ConsultarDisponibilidad>();
+builder.Services.AddScoped<ReservarCita>();
 
 var app = builder.Build();
 
