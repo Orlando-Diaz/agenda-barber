@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: agenda_dev
       POSTGRES_DB: agendabarber
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - agendabarber-datos:/var/lib/postgresql/data
 
