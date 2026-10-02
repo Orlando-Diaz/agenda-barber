@@ -2,6 +2,7 @@ using AgendaBarber.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AgendaBarber.Application.Barberias;
 
 namespace AgendaBarber.Infrastructure;
 
@@ -14,6 +15,7 @@ public static class DependencyInjection
             ?? throw new InvalidOperationException("Falta la cadena de conexión 'AgendaBarber'.");
 
         services.AddDbContext<AgendaDbContext>(opciones => opciones.UseNpgsql(conexion));
+        services.AddScoped<IBarberiaRepositorio, BarberiaRepositorio>();
         return services;
     }
 }

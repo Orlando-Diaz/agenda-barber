@@ -1,6 +1,31 @@
-@AgendaBarber.Api_HostAddress = http://localhost:5068
+@host = http://localhost:5068
 
-GET {{AgendaBarber.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### Prueba 1: crear barbería válida (espera 201 Created)
+POST {{host}}/api/barberias
+Content-Type: application/json
 
-###
+{
+  "nombre": "La Navaja",
+  "slug": "la-navaja",
+  "telefono": "3001112222"
+}
+
+### Prueba 2: slug repetido (espera 400 "Ese enlace ya está en uso")
+POST {{host}}/api/barberias
+Content-Type: application/json
+
+{
+  "nombre": "Otra",
+  "slug": "el-patron",
+  "telefono": "3009998888"
+}
+
+### Prueba 3: slug inválido (espera 400 con el mensaje de formato)
+POST {{host}}/api/barberias
+Content-Type: application/json
+
+{
+  "nombre": "Mi Barberia",
+  "slug": "Mi Barberia",
+  "telefono": null
+}

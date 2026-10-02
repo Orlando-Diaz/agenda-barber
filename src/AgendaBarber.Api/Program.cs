@@ -1,10 +1,12 @@
 using AgendaBarber.Infrastructure;
+using AgendaBarber.Application.Barberias;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<CrearBarberia>();
 
 var app = builder.Build();
 
