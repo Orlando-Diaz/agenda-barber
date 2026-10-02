@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using AgendaBarber.Application.Barberias;
 using AgendaBarber.Application.Servicios;
 using AgendaBarber.Application.Barberos;
+using AgendaBarber.Application.Citas;
 
 namespace AgendaBarber.Infrastructure;
 
@@ -20,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IBarberiaRepositorio, BarberiaRepositorio>();
         services.AddScoped<IServicioRepositorio, ServicioRepositorio>();
         services.AddScoped<IBarberoRepositorio, BarberoRepositorio>();
+        services.AddScoped<ICitaRepositorio, CitaRepositorio>();
         return services;
     }
 }

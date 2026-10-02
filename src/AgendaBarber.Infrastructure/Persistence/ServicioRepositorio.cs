@@ -18,4 +18,9 @@ public class ServicioRepositorio(AgendaDbContext db) : IServicioRepositorio
             .Where(s => s.BarberiaId == barberiaId && s.Activo)
             .OrderBy(s => s.Nombre)
             .ToListAsync(ct);
+
+    public Task<Servicio?> ObtenerActivoAsync(Guid barberiaId, Guid servicioId, CancellationToken ct = default) =>
+        db.Servicios
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == servicioId && s.BarberiaId == barberiaId && s.Activo, ct);
 }
