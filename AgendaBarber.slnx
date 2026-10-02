@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AgendaBarber.Api/AgendaBarber.Api.csproj" />
+    <Project Path="src/AgendaBarber.Application/AgendaBarber.Application.csproj" />
+    <Project Path="src/AgendaBarber.Domain/AgendaBarber.Domain.csproj" />
+    <Project Path="src/AgendaBarber.Infrastructure/AgendaBarber.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AgendaBarber.Tests/AgendaBarber.Tests.csproj" />
+  </Folder>
+</Solution>
