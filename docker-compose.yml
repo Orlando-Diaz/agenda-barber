@@ -1,0 +1,17 @@
+# Base de datos para desarrollo: `docker compose up -d`
+# Usa el puerto 5433 para no chocar con un PostgreSQL instalado en tu PC (que usa el 5432).
+services:
+  db:
+    image: postgres:16
+    container_name: agendabarber-db
+    environment:
+      POSTGRES_USER: agenda
+      POSTGRES_PASSWORD: agenda_dev
+      POSTGRES_DB: agendabarber
+    ports:
+      - "5433:5432"
+    volumes:
+      - agendabarber-datos:/var/lib/postgresql/data
+
+volumes:
+  agendabarber-datos:
