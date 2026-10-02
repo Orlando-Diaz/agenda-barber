@@ -6,4 +6,5 @@ public interface IBarberiaRepositorio
 {
     Task<bool> ExisteSlugAsync(string slug, CancellationToken ct = default);
     Task AgregarAsync(Barberia barberia, CancellationToken ct = default);
+    Task<Barberia?> ObtenerPorSlugAsync(string slug, CancellationToken ct = default);
 }

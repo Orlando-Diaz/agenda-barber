@@ -7,6 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<CrearBarberia>();
+builder.Services.AddScoped<ObtenerBarberiaPorSlug>();
 
 var app = builder.Build();
 

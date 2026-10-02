@@ -14,4 +14,7 @@ public class BarberiaRepositorio(AgendaDbContext db) : IBarberiaRepositorio
         db.Barberias.Add(barberia);
         await db.SaveChangesAsync(ct);
     }
+
+    public Task<Barberia?> ObtenerPorSlugAsync(string slug, CancellationToken ct = default) =>
+        db.Barberias.AsNoTracking().FirstOrDefaultAsync(b => b.Slug == slug, ct);
 }

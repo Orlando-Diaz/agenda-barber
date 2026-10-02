@@ -8,7 +8,9 @@ public record CrearBarberiaRequest(string Nombre, string Slug, string? Telefono)
 
 [ApiController]
 [Route("api/barberias")]
-public class BarberiasController(CrearBarberia crearBarberia) : ControllerBase
+public class BarberiasController(
+    CrearBarberia crearBarberia,
+    ObtenerBarberiaPorSlug obtenerBarberiaPorSlug) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Crear(CrearBarberiaRequest request, CancellationToken ct)
@@ -22,5 +24,15 @@ public class BarberiasController(CrearBarberia crearBarberia) : ControllerBase
         {
             return BadRequest(new { error = ex.Message });
         }
+    }
+
+    [HttpGet("{slug}")]
+    public async Task<IActionResult> ObtenerPorSlug(string slug, CancellationToken ct)
+    {
+        var barberia = await obtenerBarberiaPorSlug.EjecutarAsync(slug, ct);
+        if (barberia is null)
+            return NotFound(new { error = "No encontramos esa barbería." });
+
+        return Ok(new { barberia.Id, barberia.Nombre, barberia.Slug, barberia.Telefono });
     }
 }

@@ -29,3 +29,9 @@ Content-Type: application/json
   "slug": "Mi Barberia",
   "telefono": null
 }
+
+### Prueba 4: consultar barbería existente (espera 200 con los datos)
+GET {{host}}/api/barberias/el-patron
+
+### Prueba 5: consultar barbería que no existe (espera 404)
+GET {{host}}/api/barberias/no-existe
