@@ -26,6 +26,9 @@ public class Barbero
     /// </summary>
     public void AgregarHorario(DayOfWeek dia, TimeOnly inicio, TimeOnly fin)
     {
+        if (!Enum.IsDefined(dia))
+            throw new DomainException("El día debe ser un número entre 0 (domingo) y 6 (sábado).");
+
         var nuevo = new HorarioTrabajo(Id, dia, inicio, fin);
         if (Horarios.Any(h => h.Dia == dia && h.Inicio < fin && inicio < h.Fin))
             throw new DomainException("Ese tramo se cruza con otro horario del mismo día.");

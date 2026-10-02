@@ -68,3 +68,37 @@ Content-Type: application/json
 
 ### Prueba 9: listar servicios (espera 200 con la lista)
 GET {{host}}/api/barberias/el-patron/servicios
+
+### Prueba 10: crear barbero (espera 201; copia el "id" que devuelve)
+POST {{host}}/api/barberias/el-patron/barberos
+Content-Type: application/json
+
+{
+  "nombre": "Carlos"
+}
+
+### Pega aquí el id del barbero:
+@barberoId = PEGA-AQUI-EL-ID
+
+### Prueba 11: horario lunes 9:00-12:00 (Dia: 0=domingo, 1=lunes ... 6=sábado) (espera 200)
+POST {{host}}/api/barberias/el-patron/barberos/{{barberoId}}/horarios
+Content-Type: application/json
+
+{
+  "dia": 1,
+  "inicio": "09:00",
+  "fin": "12:00"
+}
+
+### Prueba 12: horario que se cruza (espera 400 "se cruza con otro horario")
+POST {{host}}/api/barberias/el-patron/barberos/{{barberoId}}/horarios
+Content-Type: application/json
+
+{
+  "dia": 1,
+  "inicio": "11:00",
+  "fin": "13:00"
+}
+
+### Prueba 13: listar barberos con sus horarios (espera 200)
+GET {{host}}/api/barberias/el-patron/barberos

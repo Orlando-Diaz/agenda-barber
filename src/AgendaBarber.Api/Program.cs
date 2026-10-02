@@ -1,6 +1,7 @@
 using AgendaBarber.Infrastructure;
 using AgendaBarber.Application.Barberias;
 using AgendaBarber.Application.Servicios;
+using AgendaBarber.Application.Barberos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,9 @@ builder.Services.AddScoped<CrearBarberia>();
 builder.Services.AddScoped<ObtenerBarberiaPorSlug>();
 builder.Services.AddScoped<CrearServicio>();
 builder.Services.AddScoped<ListarServicios>();
+builder.Services.AddScoped<CrearBarbero>();
+builder.Services.AddScoped<AgregarHorarioBarbero>();
+builder.Services.AddScoped<ListarBarberos>();
 
 var app = builder.Build();
 
