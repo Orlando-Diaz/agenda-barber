@@ -35,3 +35,36 @@ GET {{host}}/api/barberias/el-patron
 
 ### Prueba 5: consultar barbería que no existe (espera 404)
 GET {{host}}/api/barberias/no-existe
+
+### Prueba 6: crear servicio (espera 201)
+POST {{host}}/api/barberias/el-patron/servicios
+Content-Type: application/json
+
+{
+  "nombre": "Corte clásico",
+  "duracionMinutos": 30,
+  "precio": 20000
+}
+
+### Prueba 7: servicio con duración inválida (espera 400)
+POST {{host}}/api/barberias/el-patron/servicios
+Content-Type: application/json
+
+{
+  "nombre": "Corte",
+  "duracionMinutos": 2,
+  "precio": 20000
+}
+
+### Prueba 8: servicio en barbería inexistente (espera 404)
+POST {{host}}/api/barberias/no-existe/servicios
+Content-Type: application/json
+
+{
+  "nombre": "Corte",
+  "duracionMinutos": 30,
+  "precio": 20000
+}
+
+### Prueba 9: listar servicios (espera 200 con la lista)
+GET {{host}}/api/barberias/el-patron/servicios

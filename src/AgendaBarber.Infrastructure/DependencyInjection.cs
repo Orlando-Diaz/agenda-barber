@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AgendaBarber.Application.Barberias;
+using AgendaBarber.Application.Servicios;
 
 namespace AgendaBarber.Infrastructure;
 
@@ -16,6 +17,7 @@ public static class DependencyInjection
 
         services.AddDbContext<AgendaDbContext>(opciones => opciones.UseNpgsql(conexion));
         services.AddScoped<IBarberiaRepositorio, BarberiaRepositorio>();
+        services.AddScoped<IServicioRepositorio, ServicioRepositorio>();
         return services;
     }
 }
