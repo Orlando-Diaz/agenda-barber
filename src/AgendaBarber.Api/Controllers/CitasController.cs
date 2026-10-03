@@ -1,3 +1,5 @@
+using AgendaBarber.Api.Seguridad;
+using Microsoft.AspNetCore.Authorization;
 using AgendaBarber.Application.Citas;
 using AgendaBarber.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -36,18 +38,22 @@ public class CitasController(ReservarCita reservarCita, CambiarEstadoCita cambia
         }
     }
 
+    [Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
     [HttpPost("{citaId:guid}/confirmar")]
     public Task<IActionResult> Confirmar(string slug, Guid citaId, CancellationToken ct) =>
         Cambiar(slug, citaId, AccionCita.Confirmar, ct);
 
+    [Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
     [HttpPost("{citaId:guid}/cancelar")]
     public Task<IActionResult> Cancelar(string slug, Guid citaId, CancellationToken ct) =>
         Cambiar(slug, citaId, AccionCita.Cancelar, ct);
 
+    [Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
     [HttpPost("{citaId:guid}/atendida")]
     public Task<IActionResult> Atendida(string slug, Guid citaId, CancellationToken ct) =>
         Cambiar(slug, citaId, AccionCita.Atendida, ct);
 
+    [Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
     [HttpPost("{citaId:guid}/no-asistio")]
     public Task<IActionResult> NoAsistio(string slug, Guid citaId, CancellationToken ct) =>
         Cambiar(slug, citaId, AccionCita.NoAsistio, ct);

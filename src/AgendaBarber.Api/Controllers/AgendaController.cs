@@ -1,8 +1,11 @@
+using AgendaBarber.Api.Seguridad;
+using Microsoft.AspNetCore.Authorization;
 using AgendaBarber.Application.Citas;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgendaBarber.Api.Controllers;
 
+[Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
 [ApiController]
 [Route("api/barberias/{slug}/agenda")]
 public class AgendaController(ConsultarAgenda consultarAgenda) : ControllerBase

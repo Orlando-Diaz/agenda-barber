@@ -17,4 +17,7 @@ public class BarberiaRepositorio(AgendaDbContext db) : IBarberiaRepositorio
 
     public Task<Barberia?> ObtenerPorSlugAsync(string slug, CancellationToken ct = default) =>
         db.Barberias.AsNoTracking().FirstOrDefaultAsync(b => b.Slug == slug, ct);
+
+    public Task<Barberia?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default) =>
+        db.Barberias.AsNoTracking().FirstOrDefaultAsync(b => b.Id == id, ct);
 }

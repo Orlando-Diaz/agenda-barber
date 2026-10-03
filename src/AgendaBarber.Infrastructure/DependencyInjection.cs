@@ -6,6 +6,8 @@ using AgendaBarber.Application.Barberias;
 using AgendaBarber.Application.Servicios;
 using AgendaBarber.Application.Barberos;
 using AgendaBarber.Application.Citas;
+using AgendaBarber.Application.Autenticacion;
+using AgendaBarber.Infrastructure.Seguridad;
 
 namespace AgendaBarber.Infrastructure;
 
@@ -22,6 +24,8 @@ public static class DependencyInjection
         services.AddScoped<IServicioRepositorio, ServicioRepositorio>();
         services.AddScoped<IBarberoRepositorio, BarberoRepositorio>();
         services.AddScoped<ICitaRepositorio, CitaRepositorio>();
+        services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+        services.AddSingleton<IHasheadorContrasenas, HasheadorContrasenas>();
         return services;
     }
 }

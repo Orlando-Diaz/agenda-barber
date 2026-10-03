@@ -1,3 +1,5 @@
+using AgendaBarber.Api.Seguridad;
+using Microsoft.AspNetCore.Authorization;
 using AgendaBarber.Application.Barberos;
 using AgendaBarber.Domain;
 using AgendaBarber.Domain.Entities;
@@ -17,6 +19,7 @@ public class BarberosController(
 {
     private const string NoEncontrado = "No encontramos la barbería o el barbero.";
 
+    [Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
     [HttpPost]
     public async Task<IActionResult> Crear(string slug, CrearBarberoRequest request, CancellationToken ct)
     {
@@ -33,6 +36,7 @@ public class BarberosController(
         }
     }
 
+    [Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
     [HttpPost("{barberoId:guid}/horarios")]
     public async Task<IActionResult> AgregarHorario(
         string slug, Guid barberoId, AgregarHorarioRequest request, CancellationToken ct)

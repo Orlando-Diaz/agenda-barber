@@ -1,3 +1,5 @@
+using AgendaBarber.Api.Seguridad;
+using Microsoft.AspNetCore.Authorization;
 using AgendaBarber.Application.Servicios;
 using AgendaBarber.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +12,7 @@ public record CrearServicioRequest(string Nombre, int DuracionMinutos, decimal P
 [Route("api/barberias/{slug}/servicios")]
 public class ServiciosController(CrearServicio crearServicio, ListarServicios listarServicios) : ControllerBase
 {
+    [Authorize(Policy = PoliticasDeAcceso.DuenoDeLaBarberia)]
     [HttpPost]
     public async Task<IActionResult> Crear(string slug, CrearServicioRequest request, CancellationToken ct)
     {

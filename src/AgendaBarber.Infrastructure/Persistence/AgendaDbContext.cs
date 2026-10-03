@@ -10,6 +10,7 @@ public class AgendaDbContext(DbContextOptions<AgendaDbContext> options) : DbCont
     public DbSet<Barbero> Barberos => Set<Barbero>();
     public DbSet<HorarioTrabajo> HorariosTrabajo => Set<HorarioTrabajo>();
     public DbSet<Cita> Citas => Set<Cita>();
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
