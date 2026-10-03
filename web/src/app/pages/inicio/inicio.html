@@ -1,0 +1,14 @@
+<main class="pagina inicio">
+  <h1 class="rotulo">AgendaBarber</h1>
+  <p class="lema">Reserva tu turno desde el celular, sin llamadas ni filas.</p>
+
+  <form class="buscar" (submit)="ir($event)">
+    <label for="enlace">Enlace de tu barbería</label>
+    <div class="buscar__fila">
+      <input id="enlace" name="enlace" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
+        placeholder="el-patron" [value]="enlace()" (input)="escribir($event)" />
+      <button type="submit" [disabled]="!enlace().trim()">Ver horas</button>
+    </div>
+    <p class="ayuda">Es el nombre que aparece al final del enlace que te compartió tu barbería.</p>
+  </form>
+</main>

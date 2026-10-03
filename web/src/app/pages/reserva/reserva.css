@@ -1,0 +1,187 @@
+:host {
+  display: block;
+  padding-bottom: 3rem;
+}
+
+/* ---------- Cabecera: el nombre como rótulo ---------- */
+.cabecera {
+  background: var(--cobalto);
+  color: var(--blanco);
+}
+
+.cabecera__contenido {
+  padding: 2.5rem 1.25rem 2rem;
+}
+
+.cabecera h1 {
+  font-size: clamp(3.25rem, 17vw, 5.5rem);
+}
+
+.cabecera p {
+  margin-top: 0.9rem;
+  max-width: 22rem;
+  font-size: 1.1rem;
+  color: #dbe4fb;
+}
+
+.tel {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--blanco);
+  font-weight: 650;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Paneles: separados por juntas, sin tarjetas ni sombras ---------- */
+.panel {
+  padding: 1.5rem 1.25rem;
+  border-top: 1px solid var(--junta);
+}
+
+.panel:first-child {
+  border-top: 0;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+/* ---------- Opciones (servicios y barberos) ---------- */
+.opciones {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.opcion {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.1rem 1rem;
+  align-items: baseline;
+  width: 100%;
+  min-height: 3.75rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: 4px;
+}
+
+.opcion__nombre {
+  font-weight: 650;
+  font-size: 1.1rem;
+}
+
+.opcion__precio {
+  font-size: 1.6rem;
+}
+
+.opcion__detalle {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+
+.opcion:hover:not(:disabled) {
+  border-color: var(--cobalto);
+}
+
+/* La barra de cobalto a la izquierda marca lo elegido */
+.opcion[aria-checked='true'] {
+  border-color: var(--tinta);
+  box-shadow: inset 0.4rem 0 0 var(--cobalto);
+  padding-left: 1.4rem;
+}
+
+.opcion:disabled {
+  background: transparent;
+  border-style: dashed;
+  color: var(--suave);
+  cursor: not-allowed;
+}
+
+/* ---------- Mensajes ---------- */
+.pista,
+.vacio {
+  color: var(--suave);
+}
+
+.error {
+  margin: 0.5rem 0 1rem;
+  padding: 0.6rem 0.9rem;
+  background: var(--blanco);
+  border-left: 0.35rem solid var(--poste);
+  font-weight: 600;
+}
+
+.estado {
+  padding: 4rem 1.25rem;
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+}
+
+.estado h1 {
+  font-size: clamp(2.75rem, 14vw, 4.5rem);
+  color: var(--cobalto);
+}
+
+/* ---------- Datos y botón ---------- */
+.campo {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 650;
+}
+
+input {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0 0.9rem;
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: 4px;
+}
+
+.ayuda {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--suave);
+}
+
+.resumen {
+  margin: 1.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--junta);
+  line-height: 1.6;
+}
+
+.reservar {
+  width: 100%;
+  min-height: 3.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--blanco);
+  background: var(--cobalto);
+  border: 0;
+  border-radius: 4px;
+}
+
+.reservar:disabled {
+  background: var(--junta);
+  color: var(--suave);
+  cursor: not-allowed;
+}
+
+@media (min-width: 40rem) {
+  .panel,
+  .cabecera__contenido {
+    padding-inline: 0;
+  }
+}

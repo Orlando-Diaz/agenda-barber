@@ -1,0 +1,144 @@
+:host {
+  display: block;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+/* Las muescas de los lados se recortan con una máscara en la línea de corte */
+.ticket {
+  --corte: 7rem;
+  background: var(--blanco);
+  -webkit-mask:
+    radial-gradient(circle 0.7rem at 0 var(--corte), #0000 97%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 0.7rem at 100% var(--corte), #0000 97%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 0.7rem at 0 var(--corte), #0000 97%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 0.7rem at 100% var(--corte), #0000 97%, #000) right / 51% 100% no-repeat;
+  animation: imprimir 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* El tiquete "sale impreso" una sola vez, como respuesta a reservar */
+@keyframes imprimir {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.ticket__cabeza {
+  height: var(--corte);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.25rem;
+  background: var(--tinta);
+  color: var(--blanco);
+  border-top: 0.5rem solid var(--poste);
+}
+
+.ticket__dia {
+  font-size: 4.75rem;
+}
+
+.ticket__fecha {
+  flex: 1;
+  line-height: 1.2;
+}
+
+.ticket__mes,
+.ticket__semana {
+  text-transform: capitalize;
+}
+
+.ticket__mes {
+  font-weight: 650;
+  font-size: 1.15rem;
+}
+
+.ticket__semana {
+  color: #c9d3de;
+}
+
+.ticket__hora {
+  text-align: right;
+  line-height: 1;
+}
+
+.ticket__hora .rotulo {
+  display: block;
+  font-size: 2.5rem;
+}
+
+.ticket__hora small {
+  font-size: 0.8rem;
+  color: #c9d3de;
+}
+
+.ticket__cuerpo {
+  padding: 1.75rem 1.25rem 1.5rem;
+}
+
+h2 {
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+h2:focus {
+  outline: none;
+}
+
+.ticket__nota {
+  margin-top: 0.5rem;
+  color: var(--suave);
+}
+
+.ticket__datos {
+  margin: 1.5rem 0;
+  display: grid;
+  gap: 0;
+  border-top: 1px dashed var(--junta);
+}
+
+.ticket__datos > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px dashed var(--junta);
+}
+
+dt {
+  color: var(--suave);
+}
+
+dd {
+  margin: 0;
+  font-weight: 650;
+  text-align: right;
+}
+
+.ticket__acciones {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.boton {
+  display: grid;
+  place-items: center;
+  min-height: 3.25rem;
+  padding: 0 1rem;
+  font-weight: 650;
+  text-decoration: none;
+  color: var(--blanco);
+  background: var(--cobalto);
+  border: 1.5px solid var(--cobalto);
+  border-radius: 4px;
+}
+
+.boton--claro {
+  color: var(--cobalto);
+  background: transparent;
+}

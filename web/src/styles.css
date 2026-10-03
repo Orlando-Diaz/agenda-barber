@@ -1,0 +1,85 @@
+/* Archivo es una fuente variable: el eje de ancho (62%–125%) permite letras ultra condensadas para
+   el nombre y las horas (como un rótulo pintado) y ancho normal para el texto. */
+@import '@fontsource-variable/archivo/wdth.css';
+
+:root {
+  --azulejo: #f1f4f3; /* fondo: azulejo blanco */
+  --blanco: #ffffff;
+  --tinta: #0f1b2d;
+  --suave: #4a5a6e; /* texto secundario */
+  --cobalto: #1d3fa8; /* color principal */
+  --poste: #d7332b; /* rojo de poste: solo para marcar lo importante */
+  --junta: #c5cfd6; /* líneas, como la junta entre azulejos */
+  --fuente: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ancho-pagina: 34rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--fuente);
+  font-stretch: 100%;
+  color: var(--tinta);
+  background: var(--azulejo);
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--cobalto);
+}
+
+:focus-visible {
+  outline: 3px solid var(--cobalto);
+  outline-offset: 2px;
+}
+
+/* Letras de rótulo: ultra condensadas y pesadas */
+.rotulo {
+  font-stretch: 62%;
+  font-weight: 850;
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+}
+
+.pagina {
+  width: 100%;
+  max-width: var(--ancho-pagina);
+  margin-inline: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

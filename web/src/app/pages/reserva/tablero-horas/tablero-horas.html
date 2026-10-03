@@ -1,0 +1,22 @@
+<ng-template #grupo let-titulo="titulo" let-celdas="celdas">
+  @if (celdas.length) {
+    <p class="franja">{{ titulo }}</p>
+    <div class="piso" role="group" [attr.aria-label]="'Horas de la ' + titulo.toLowerCase()">
+      @for (c of celdas; track c.hora.inicioUtc) {
+        <button
+          type="button"
+          class="baldosa"
+          [attr.aria-pressed]="seleccionada() === c.hora.inicioUtc"
+          [attr.aria-label]="c.numero + ' ' + c.sufijo"
+          (click)="elegida.emit(c.hora)"
+        >
+          <span class="baldosa__numero rotulo">{{ c.numero }}</span>
+          <span class="baldosa__sufijo">{{ c.sufijo }}</span>
+        </button>
+      }
+    </div>
+  }
+</ng-template>
+
+<ng-container *ngTemplateOutlet="grupo; context: { titulo: 'Mañana', celdas: manana() }" />
+<ng-container *ngTemplateOutlet="grupo; context: { titulo: 'Tarde', celdas: tarde() }" />

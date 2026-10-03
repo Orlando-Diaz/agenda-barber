@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.franja {
+  margin: 1rem 0 0.5rem;
+  font-weight: 650;
+  color: var(--suave);
+}
+
+.franja:first-child {
+  margin-top: 0;
+}
+
+/* Las "juntas" entre azulejos son los bordes de cada baldosa: si la última fila queda incompleta, no sobra un hueco gris */
+.piso {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.25rem, 1fr));
+  border-top: 1px solid var(--junta);
+  border-left: 1px solid var(--junta);
+}
+
+.baldosa {
+  position: relative;
+  min-height: 4.5rem;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  padding: 0.35rem 0;
+  background: var(--blanco);
+  border: 0;
+  border-right: 1px solid var(--junta);
+  border-bottom: 1px solid var(--junta);
+  border-radius: 0;
+}
+
+.baldosa__numero {
+  font-size: 2rem;
+}
+
+.baldosa__sufijo {
+  font-size: 0.75rem;
+  color: var(--suave);
+}
+
+.baldosa:hover {
+  background: #eaf0fb;
+}
+
+.baldosa[aria-pressed='true'] {
+  background: var(--tinta);
+  color: var(--blanco);
+}
+
+.baldosa[aria-pressed='true'] .baldosa__sufijo {
+  color: #c9d3de;
+}
+
+/* La esquina roja marca la hora elegida */
+.baldosa[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.9rem;
+  height: 0.9rem;
+  background: var(--poste);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.baldosa:focus-visible {
+  z-index: 1;
+  outline-offset: -3px;
+}

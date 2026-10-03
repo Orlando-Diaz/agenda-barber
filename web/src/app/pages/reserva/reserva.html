@@ -1,0 +1,117 @@
+@if (cargando()) {
+  <p class="estado" role="status">Cargando la agenda…</p>
+} @else if (noEncontrada()) {
+  <main class="pagina estado">
+    <h1 class="rotulo">No encontramos esta barbería</h1>
+    <p>Revisa que el enlace esté completo. Si el problema sigue, pídele el enlace de nuevo a tu barbería.</p>
+  </main>
+} @else if (errorCarga(); as mensaje) {
+  <main class="pagina estado">
+    <h1 class="rotulo">Algo falló</h1>
+    <p role="alert">{{ mensaje }}</p>
+    <button type="button" class="reservar" (click)="cargar()">Intentar de nuevo</button>
+  </main>
+} @else if (barberia(); as b) {
+  <header class="cabecera">
+    <div class="pagina cabecera__contenido">
+      <h1 class="rotulo">{{ b.nombre }}</h1>
+      <p>Reserva tu turno en línea, sin llamadas ni filas.</p>
+      @if (b.telefono) {
+        <a class="tel" [href]="'tel:' + b.telefono">{{ b.telefono }}</a>
+      }
+    </div>
+  </header>
+
+  <main class="pagina">
+    @if (cita(); as c) {
+      <app-ticket [cita]="c" [barberia]="b" (otra)="nuevaReserva()" />
+    } @else {
+      <section class="panel" aria-labelledby="t-servicio">
+        <h2 id="t-servicio">Servicio</h2>
+        <div class="opciones" role="radiogroup" aria-labelledby="t-servicio">
+          @for (s of servicios(); track s.id) {
+            <button type="button" role="radio" class="opcion" [attr.aria-checked]="servicioId() === s.id" (click)="elegirServicio(s.id)">
+              <span class="opcion__nombre">{{ s.nombre }}</span>
+              <span class="opcion__precio rotulo">{{ pesos(s.precio) }}</span>
+              <span class="opcion__detalle">{{ s.duracionMinutos }} min</span>
+            </button>
+          } @empty {
+            <p class="vacio">Esta barbería todavía no publicó sus servicios. Vuelve a intentar más tarde.</p>
+          }
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="t-barbero">
+        <h2 id="t-barbero">Barbero</h2>
+        <div class="opciones" role="radiogroup" aria-labelledby="t-barbero">
+          @for (x of barberos(); track x.id) {
+            <button type="button" role="radio" class="opcion" [disabled]="x.horarios.length === 0" [attr.aria-checked]="barberoId() === x.id" (click)="elegirBarbero(x.id)">
+              <span class="opcion__nombre">{{ x.nombre }}</span>
+              <span class="opcion__detalle opcion__detalle--ancho">{{ diasTexto(x) }}</span>
+            </button>
+          } @empty {
+            <p class="vacio">Esta barbería todavía no tiene barberos disponibles.</p>
+          }
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="t-dia">
+        <h2 id="t-dia">Día y hora</h2>
+        @if (!servicioId() || !barberoId()) {
+          <p class="pista">Elige un servicio y un barbero para ver los días.</p>
+        } @else {
+          <app-tira-dias [dias]="dias" [habilitados]="diasHabilitados()" [seleccionado]="dia()" (elegido)="elegirDia($event)" />
+
+          @if (errorReserva(); as e) {
+            @if (!horaSel()) {
+              <p class="error" role="alert">{{ e }}</p>
+            }
+          }
+
+          @if (!dia()) {
+            <p class="pista">Elige un día.</p>
+          } @else if (cargandoHoras()) {
+            <p class="pista" role="status">Buscando horas libres…</p>
+          } @else if (errorHoras(); as e) {
+            <p class="error" role="alert">{{ e }}</p>
+          } @else if (horas().length === 0) {
+            <p class="pista">{{ barbero()?.nombre }} no tiene horas libres ese día. Prueba con otro día.</p>
+          } @else {
+            <app-tablero-horas [horas]="horas()" [seleccionada]="horaSel()?.inicioUtc ?? null" (elegida)="elegirHora($event)" />
+          }
+        }
+      </section>
+
+      @if (resumen(); as r) {
+        <section class="panel" aria-labelledby="t-datos">
+          <h2 id="t-datos">Tus datos</h2>
+          <form class="datos" (submit)="reservar($event)" novalidate>
+            <div class="campo">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" name="nombre" type="text" autocomplete="name" maxlength="100" [value]="nombre()" (input)="escribirNombre($event)" />
+            </div>
+            <div class="campo">
+              <label for="celular">Celular</label>
+              <input id="celular" name="celular" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" [value]="telefono()" (input)="escribirTelefono($event)" />
+              <p class="ayuda">La barbería usará tu celular para confirmar el turno.</p>
+            </div>
+
+            <p class="resumen">
+              <strong>{{ r.servicio }}</strong> con {{ r.barbero }}<br />
+              {{ r.cuando }}<br />
+              Total {{ r.total }}
+            </p>
+
+            @if (errorReserva(); as e) {
+              <p class="error" role="alert">{{ e }}</p>
+            }
+
+            <button type="submit" class="reservar" [disabled]="!datosValidos() || enviando()">
+              {{ enviando() ? 'Reservando…' : 'Reservar turno' }}
+            </button>
+          </form>
+        </section>
+      }
+    }
+  </main>
+}

@@ -1,0 +1,59 @@
+.tira {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 1.25rem 0.75rem;
+  margin-inline: -1.25rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.dia {
+  flex: 0 0 4.25rem;
+  min-height: 5.25rem;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  padding: 0.4rem 0;
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: 4px;
+  scroll-snap-align: start;
+}
+
+.dia__semana,
+.dia__mes {
+  font-size: 0.8rem;
+  color: var(--suave);
+}
+
+.dia__numero {
+  font-size: 2.1rem;
+}
+
+.dia[aria-pressed='true'] {
+  background: var(--tinta);
+  border-color: var(--tinta);
+  color: var(--blanco);
+}
+
+.dia[aria-pressed='true'] .dia__semana,
+.dia[aria-pressed='true'] .dia__mes {
+  color: #c9d3de;
+}
+
+.dia:disabled {
+  background: transparent;
+  border-style: dashed;
+  color: var(--suave);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* En pantallas anchas la columna ya tiene aire a los lados: la tira no necesita salirse */
+@media (min-width: 40rem) {
+  .tira {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}

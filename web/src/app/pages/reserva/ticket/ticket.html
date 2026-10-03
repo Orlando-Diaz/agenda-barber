@@ -1,0 +1,32 @@
+<article class="ticket" aria-labelledby="t-ticket">
+  <div class="ticket__cabeza">
+    <p class="ticket__dia rotulo">{{ numeroDia() }}</p>
+    <div class="ticket__fecha">
+      <p class="ticket__mes">{{ mes() }}</p>
+      <p class="ticket__semana">{{ semana() }}</p>
+    </div>
+    <p class="ticket__hora">
+      <span class="rotulo">{{ hora().numero }}</span>
+      <small>{{ hora().sufijo }}</small>
+    </p>
+  </div>
+
+  <div class="ticket__cuerpo">
+    <h2 id="t-ticket" #titulo tabindex="-1">Tu turno quedó reservado</h2>
+    <p class="ticket__nota">La barbería lo confirmará pronto. Guarda esta pantalla o avísales por WhatsApp.</p>
+
+    <dl class="ticket__datos">
+      <div><dt>Servicio</dt><dd>{{ cita().servicio }}</dd></div>
+      <div><dt>Barbero</dt><dd>{{ cita().barbero }}</dd></div>
+      <div><dt>A nombre de</dt><dd>{{ cita().cliente }}</dd></div>
+      <div><dt>Total a pagar en la barbería</dt><dd>{{ total() }}</dd></div>
+    </dl>
+
+    <div class="ticket__acciones">
+      @if (whatsapp(); as enlace) {
+        <a class="boton" [href]="enlace" target="_blank" rel="noopener">Avisar por WhatsApp</a>
+      }
+      <button type="button" class="boton boton--claro" (click)="otra.emit()">Reservar otro turno</button>
+    </div>
+  </div>
+</article>

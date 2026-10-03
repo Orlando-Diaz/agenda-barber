@@ -1,0 +1,15 @@
+<div class="tira" role="group" aria-label="Días disponibles">
+  @for (d of dias(); track d.iso) {
+    <button
+      type="button"
+      class="dia"
+      [disabled]="!habilitados().has(d.diaSemana)"
+      [attr.aria-pressed]="seleccionado() === d.iso"
+      (click)="elegido.emit(d.iso)"
+    >
+      <span class="dia__semana">{{ d.esHoy ? 'hoy' : d.semana }}</span>
+      <span class="dia__numero rotulo">{{ d.numero }}</span>
+      <span class="dia__mes">{{ d.mes }}</span>
+    </button>
+  }
+</div>
