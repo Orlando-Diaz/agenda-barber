@@ -1,0 +1,45 @@
+<main class="pagina seccion">
+  <h1 class="rotulo">Servicios</h1>
+
+  @if (errorCarga(); as e) {
+    <p class="aviso-error" role="alert">{{ e }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></p>
+  } @else if (servicios() === null) {
+    <p class="vacio">Cargando servicios…</p>
+  } @else if (servicios()!.length === 0) {
+    <p class="vacio">Todavía no tienes servicios. Crea el primero abajo: tus clientes lo verán al reservar.</p>
+  } @else {
+    <ul class="lista">
+      @for (s of servicios(); track s.id) {
+        <li class="item">
+          <div>
+            <p class="item__nombre">{{ s.nombre }}</p>
+            <p class="item__detalle">{{ s.duracionMinutos }} min</p>
+          </div>
+          <p class="item__precio rotulo">{{ precio(s) }}</p>
+        </li>
+      }
+    </ul>
+  }
+
+  <h2>Nuevo servicio</h2>
+  <form class="formulario" #f (submit)="crear($event, f)" novalidate>
+    <div class="campo">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" name="nombre" type="text" maxlength="80" placeholder="Corte clásico" autocomplete="off" required />
+    </div>
+    <div class="fila-2">
+      <div class="campo">
+        <label for="duracion">Duración (min)</label>
+        <input id="duracion" name="duracion" type="number" inputmode="numeric" min="5" max="480" step="5" placeholder="30" required />
+      </div>
+      <div class="campo">
+        <label for="precio">Precio (COP)</label>
+        <input id="precio" name="precio" type="number" inputmode="numeric" min="0" step="1000" placeholder="20000" required />
+      </div>
+    </div>
+    @if (error(); as e) {
+      <p class="aviso-error" role="alert">{{ e }}</p>
+    }
+    <button type="submit" class="btn" [disabled]="enviando()">{{ enviando() ? 'Guardando…' : 'Agregar servicio' }}</button>
+  </form>
+</main>

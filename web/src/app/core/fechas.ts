@@ -76,3 +76,11 @@ export const textoHora = (hora: string): string => {
   const l = horaLegible(hora);
   return `${l.numero} ${l.sufijo}`;
 };
+
+/** Día de la semana (0-6) -> "lunes" */
+export function nombreDia(dia: number): string {
+  return semanaLarga.format(new Date(2024, 0, 7 + dia));
+}
+
+/** Orden para mostrar la semana en Colombia: lunes primero, domingo al final. */
+export const DIAS_LUNES_A_DOMINGO = [1, 2, 3, 4, 5, 6, 0] as const;

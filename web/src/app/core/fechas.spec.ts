@@ -1,4 +1,4 @@
-import { aIso, desdeIso, fechaLarga, horaLegible, proximosDias, semanaCorta } from './fechas';
+import { aIso, desdeIso, fechaLarga, horaLegible, nombreDia, proximosDias, semanaCorta } from './fechas';
 
 describe('fechas', () => {
   it('lista los próximos días empezando por hoy', () => {
@@ -33,5 +33,10 @@ describe('fechas', () => {
     expect(horaLegible('09:00')).toEqual({ numero: '9:00', sufijo: 'a. m.' });
     expect(horaLegible('00:15')).toEqual({ numero: '12:15', sufijo: 'a. m.' });
     expect(horaLegible('12:00')).toEqual({ numero: '12:00', sufijo: 'p. m.' });
+  });
+
+  it('da el nombre del día de la semana (0 = domingo)', () => {
+    expect(nombreDia(0)).toBe('domingo');
+    expect(nombreDia(1)).toBe('lunes');
   });
 });

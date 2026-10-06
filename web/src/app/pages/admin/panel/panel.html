@@ -2,12 +2,15 @@
   <div class="pagina barra__contenido">
     <div>
       <p class="barra__rotulo rotulo">{{ sesion()?.nombreBarberia }}</p>
-      <a class="barra__publica" [href]="'/b/' + sesion()?.slug" target="_blank" rel="noopener">
-        Ver mi página de reservas
-      </a>
+      <a class="barra__publica" [routerLink]="['/b', sesion()?.slug]">Ver mi página de reservas</a>
     </div>
     <button type="button" class="barra__salir" (click)="sesionService.salir()">Salir</button>
   </div>
+  <nav class="pagina barra__nav" aria-label="Secciones del panel">
+    <a routerLink="/admin" routerLinkActive="activa" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Agenda</a>
+    <a routerLink="/admin/servicios" routerLinkActive="activa" ariaCurrentWhenActive="page">Servicios</a>
+    <a routerLink="/admin/barberos" routerLinkActive="activa" ariaCurrentWhenActive="page">Barberos</a>
+  </nav>
 </header>
 
 <router-outlet />

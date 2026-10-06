@@ -30,6 +30,16 @@ export const routes: Routes = [
         title: 'Agenda · AgendaBarber',
         loadComponent: () => import('./pages/admin/agenda/agenda').then((m) => m.Agenda),
       },
+      {
+        path: 'servicios',
+        title: 'Servicios · AgendaBarber',
+        loadComponent: () => import('./pages/admin/servicios/servicios').then((m) => m.Servicios),
+      },
+      {
+        path: 'barberos',
+        title: 'Barberos · AgendaBarber',
+        loadComponent: () => import('./pages/admin/barberos/barberos').then((m) => m.Barberos),
+      },
     ],
   },
   {

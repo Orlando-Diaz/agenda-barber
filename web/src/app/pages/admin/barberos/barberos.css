@@ -1,0 +1,105 @@
+.barbero {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--junta);
+}
+
+.barbero h2 {
+  margin-top: 1.5rem;
+}
+
+.nuevo {
+  margin-top: 2.5rem;
+}
+
+.sin-horario {
+  color: var(--poste);
+  font-weight: 600;
+}
+
+.horarios {
+  margin: 0;
+}
+
+.horarios__fila {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+}
+
+.horarios dt {
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.horarios dd {
+  margin: 0;
+  color: var(--suave);
+}
+
+.agregar {
+  margin-top: 1rem;
+}
+
+.agregar summary {
+  cursor: pointer;
+  color: var(--cobalto);
+  font-weight: 650;
+}
+
+.agregar .formulario {
+  margin-top: 0.75rem;
+}
+
+.dias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.dia {
+  position: relative;
+  margin: 0 !important;
+  font-weight: 400 !important;
+}
+
+.dia input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.dia span {
+  display: block;
+  min-width: 3rem;
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+  text-transform: capitalize;
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: 4px;
+}
+
+.dia input:checked + span {
+  color: var(--blanco);
+  background: var(--cobalto);
+  border-color: var(--cobalto);
+  font-weight: 650;
+}
+
+.dia input:focus-visible + span {
+  outline: 3px solid var(--cobalto);
+  outline-offset: 2px;
+}
+
+.enlace {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--cobalto);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

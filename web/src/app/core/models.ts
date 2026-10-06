@@ -91,3 +91,9 @@ export interface ItemAgenda {
   precio: number;
   estado: EstadoCita;
 }
+
+export interface NuevoServicio {
+  nombre: string;
+  duracionMinutos: number;
+  precio: number;
+}

@@ -1,0 +1,39 @@
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--junta);
+}
+
+.item__nombre {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.item__detalle {
+  color: var(--suave);
+}
+
+.item__precio {
+  font-size: 1.75rem;
+  color: var(--cobalto);
+  white-space: nowrap;
+}
+
+.enlace {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--cobalto);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

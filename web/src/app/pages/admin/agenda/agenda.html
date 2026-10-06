@@ -64,7 +64,7 @@
                   }
                   @if (c.estado === 'Pendiente' || c.estado === 'Confirmada') {
                     @if (recordatorio(c); as wa) {
-                      <a class="boton boton--enlace" [href]="wa" target="_blank" rel="noopener">Recordar por WhatsApp</a>
+                      <a class="boton boton--enlace" [href]="wa">Recordar por WhatsApp</a>
                     }
                   }
                 }

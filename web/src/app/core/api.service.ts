@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from './api.config';
 import {
-  AccionCita, Barberia, Barbero, CitaCreada, HoraDisponible, ItemAgenda, NuevaCita, NuevoRegistro, Servicio, Sesion,
+  AccionCita, Barberia, Barbero, CitaCreada, HoraDisponible, ItemAgenda, NuevaCita, NuevoRegistro, NuevoServicio, Servicio, Sesion,
 } from './models';
 
 /** Todas las llamadas a la API pasan por aquí: los componentes no conocen las URLs. */
@@ -46,6 +46,19 @@ export class ApiService {
   agenda(slug: string, fecha: string): Observable<ItemAgenda[]> {
     const params = new HttpParams().set('fecha', fecha);
     return this.http.get<ItemAgenda[]>(`${this.url}/barberias/${slug}/agenda`, { params });
+  }
+
+  crearServicio(slug: string, servicio: NuevoServicio): Observable<Servicio> {
+    return this.http.post<Servicio>(`${this.url}/barberias/${slug}/servicios`, servicio);
+  }
+
+  crearBarbero(slug: string, nombre: string): Observable<Barbero> {
+    return this.http.post<Barbero>(`${this.url}/barberias/${slug}/barberos`, { nombre });
+  }
+
+  /** Devuelve el barbero ya con todos sus horarios. */
+  agregarHorario(slug: string, barberoId: string, dia: number, inicio: string, fin: string): Observable<Barbero> {
+    return this.http.post<Barbero>(`${this.url}/barberias/${slug}/barberos/${barberoId}/horarios`, { dia, inicio, fin });
   }
 
   cambiarEstado(slug: string, citaId: string, accion: AccionCita): Observable<{ id: string; estado: string }> {

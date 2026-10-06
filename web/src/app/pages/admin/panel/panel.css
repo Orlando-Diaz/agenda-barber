@@ -36,3 +36,22 @@
 .barra :focus-visible {
   outline-color: var(--blanco);
 }
+
+.barra__nav {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0 1.25rem;
+}
+
+.barra__nav a {
+  padding: 0.65rem 0.9rem;
+  color: #dbe4fb;
+  font-weight: 650;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+.barra__nav a.activa {
+  color: var(--blanco);
+  border-bottom-color: var(--blanco);
+}

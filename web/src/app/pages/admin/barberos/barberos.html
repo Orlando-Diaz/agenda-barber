@@ -1,0 +1,78 @@
+<main class="pagina seccion">
+  <h1 class="rotulo">Barberos</h1>
+
+  @if (errorCarga(); as e) {
+    <p class="aviso-error" role="alert">{{ e }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></p>
+  } @else if (barberos() === null) {
+    <p class="vacio">Cargando barberos…</p>
+  } @else if (barberos()!.length === 0) {
+    <p class="vacio">Todavía no tienes barberos. Agrega el primero abajo.</p>
+  }
+
+  @for (b of vista(); track b.id) {
+    <section class="barbero" [attr.aria-labelledby]="'b-' + b.id">
+      <h2 [id]="'b-' + b.id">{{ b.nombre }}</h2>
+
+      @if (b.porDia.length === 0) {
+        <p class="sin-horario">Sin horarios: este barbero todavía no aparece para reservar.</p>
+      } @else {
+        <dl class="horarios">
+          @for (d of b.porDia; track d.nombre) {
+            <div class="horarios__fila">
+              <dt>{{ d.nombre }}</dt>
+              <dd>{{ d.tramos.join(' · ') }}</dd>
+            </div>
+          }
+        </dl>
+      }
+
+      <details class="agregar" [open]="b.porDia.length === 0">
+        <summary>Agregar horario</summary>
+        <form class="formulario" #f (submit)="agregarHorario($event, f, b)" novalidate>
+          <fieldset class="campo">
+            <legend>Días</legend>
+            <div class="dias">
+              @for (d of dias; track d.numero) {
+                <label class="dia">
+                  <input type="checkbox" name="dia" [value]="d.numero" />
+                  <span>{{ d.nombre.slice(0, 3) }}</span>
+                </label>
+              }
+            </div>
+          </fieldset>
+          <div class="fila-2">
+            <div class="campo">
+              <label [for]="'ini-' + b.id">Desde</label>
+              <input [id]="'ini-' + b.id" name="inicio" type="time" required />
+            </div>
+            <div class="campo">
+              <label [for]="'fin-' + b.id">Hasta</label>
+              <input [id]="'fin-' + b.id" name="fin" type="time" required />
+            </div>
+          </div>
+          <p class="campo"><span class="ayuda">Para turno partido (mañana y tarde), agrega cada tramo por separado.</span></p>
+          @if (errorHorario(); as eh) {
+            @if (eh.id === b.id) {
+              <p class="aviso-error" role="alert">{{ eh.mensaje }}</p>
+            }
+          }
+          <button type="submit" class="btn" [disabled]="guardando() !== null">
+            {{ guardando() === b.id ? 'Guardando…' : 'Guardar horario' }}
+          </button>
+        </form>
+      </details>
+    </section>
+  }
+
+  <h2 class="nuevo">Nuevo barbero</h2>
+  <form class="formulario" #fb (submit)="crearBarbero($event, fb)" novalidate>
+    <div class="campo">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" name="nombre" type="text" maxlength="80" placeholder="Carlos" autocomplete="off" required />
+    </div>
+    @if (errorBarbero(); as e) {
+      <p class="aviso-error" role="alert">{{ e }}</p>
+    }
+    <button type="submit" class="btn" [disabled]="enviandoBarbero()">{{ enviandoBarbero() ? 'Guardando…' : 'Agregar barbero' }}</button>
+  </form>
+</main>
