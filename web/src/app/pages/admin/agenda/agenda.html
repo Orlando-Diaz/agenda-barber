@@ -1,0 +1,78 @@
+<main class="pagina agenda">
+  <h1 class="rotulo">Agenda</h1>
+
+  <div class="dias" role="group" aria-label="Cambiar de día">
+    <button type="button" class="paso" (click)="mover(-1)" aria-label="Día anterior">‹</button>
+    <div class="dias__centro">
+      <p class="dias__titulo" aria-live="polite">{{ titulo() }}</p>
+      <label class="dias__salto">
+        <span class="visualmente-oculto">Ir a una fecha</span>
+        <input type="date" [value]="fecha()" (change)="escribirFecha($event)" />
+      </label>
+    </div>
+    <button type="button" class="paso" (click)="mover(1)" aria-label="Día siguiente">›</button>
+  </div>
+  @if (!esHoy()) {
+    <button type="button" class="enlace" (click)="irA(hoyIso())">Volver a hoy</button>
+  }
+
+  @if (errorCarga(); as e) {
+    <p class="error" role="alert">
+      {{ e }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button>
+    </p>
+  } @else if (citas() === null) {
+    <p class="vacio">Cargando agenda…</p>
+  } @else {
+    <p class="resumen" [class.resumen--carga]="cargando()">
+      <strong>{{ resumen().citas }}</strong> {{ resumen().citas === 1 ? 'cita' : 'citas' }} · {{ resumen().total }}
+      @if (resumen().porConfirmar > 0) {
+        · <span class="resumen__alerta">{{ resumen().porConfirmar }} por confirmar</span>
+      }
+    </p>
+
+    @if (ordenadas().length === 0) {
+      <p class="vacio">No hay citas este día.</p>
+    } @else {
+      <ul class="lista">
+        @for (c of ordenadas(); track c.id) {
+          <li class="cita" [class]="'cita--' + c.estado.toLowerCase()">
+            <div class="cita__hora">
+              <span class="cita__inicio rotulo">{{ hora(c).numero }}</span>
+              <span class="cita__sufijo">{{ hora(c).sufijo }}</span>
+            </div>
+            <div class="cita__datos">
+              <p class="cita__cliente">{{ c.clienteNombre }}</p>
+              <p class="cita__detalle">{{ c.servicio }} · {{ c.barbero }} · {{ precio(c) }}</p>
+              <p class="cita__estado">{{ estado(c) }}</p>
+
+              @if (errorAccion(); as ea) {
+                @if (ea.id === c.id) {
+                  <p class="error" role="alert">{{ ea.mensaje }}</p>
+                }
+              }
+
+              <div class="cita__acciones">
+                @if (confirmandoCancelar() === c.id) {
+                  <span class="cita__pregunta">¿Cancelar esta cita?</span>
+                  <button type="button" class="boton boton--peligro" [disabled]="ocupada() !== null"
+                    (click)="cancelarConfirmado(c)">Sí, cancelar</button>
+                  <button type="button" class="boton" (click)="noCancelar()">No</button>
+                } @else {
+                  @for (b of acciones(c); track b.accion) {
+                    <button type="button" class="boton" [class.boton--principal]="b.principal"
+                      [disabled]="ocupada() !== null" (click)="pulsar(c, b)">{{ b.etiqueta }}</button>
+                  }
+                  @if (c.estado === 'Pendiente' || c.estado === 'Confirmada') {
+                    @if (recordatorio(c); as wa) {
+                      <a class="boton boton--enlace" [href]="wa" target="_blank" rel="noopener">Recordar por WhatsApp</a>
+                    }
+                  }
+                }
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  }
+</main>

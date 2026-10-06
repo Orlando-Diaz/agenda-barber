@@ -57,3 +57,37 @@ export interface CitaConfirmada {
   precio: number;
   cliente: string;
 }
+
+// ---------- Panel del dueño ----------
+
+/** Lo que responden login y registro. */
+export interface Sesion {
+  token: string;
+  expiraUtc: string;
+  slug: string;
+  nombreBarberia: string;
+}
+
+export interface NuevoRegistro {
+  nombreBarberia: string;
+  slug: string;
+  telefono: string | null;
+  email: string;
+  password: string;
+}
+
+export type EstadoCita = 'Pendiente' | 'Confirmada' | 'Cancelada' | 'Atendida' | 'NoAsistio';
+export type AccionCita = 'confirmar' | 'cancelar' | 'atendida' | 'no-asistio';
+
+/** Una cita de la agenda del día (horas ya en hora local de la barbería). */
+export interface ItemAgenda {
+  id: string;
+  horaInicio: string;
+  horaFin: string;
+  barbero: string;
+  servicio: string;
+  clienteNombre: string;
+  clienteTelefono: string;
+  precio: number;
+  estado: EstadoCita;
+}

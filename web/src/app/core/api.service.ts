@@ -2,7 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from './api.config';
-import { Barberia, Barbero, CitaCreada, HoraDisponible, NuevaCita, Servicio } from './models';
+import {
+  AccionCita, Barberia, Barbero, CitaCreada, HoraDisponible, ItemAgenda, NuevaCita, NuevoRegistro, Servicio, Sesion,
+} from './models';
 
 /** Todas las llamadas a la API pasan por aquí: los componentes no conocen las URLs. */
 @Injectable({ providedIn: 'root' })
@@ -29,6 +31,25 @@ export class ApiService {
 
   reservar(slug: string, cita: NuevaCita): Observable<CitaCreada> {
     return this.http.post<CitaCreada>(`${this.url}/barberias/${slug}/citas`, cita);
+  }
+
+  // ---------- Panel del dueño (el interceptor agrega el token) ----------
+
+  login(email: string, password: string): Observable<Sesion> {
+    return this.http.post<Sesion>(`${this.url}/auth/login`, { email, password });
+  }
+
+  registro(datos: NuevoRegistro): Observable<Sesion> {
+    return this.http.post<Sesion>(`${this.url}/auth/registro`, datos);
+  }
+
+  agenda(slug: string, fecha: string): Observable<ItemAgenda[]> {
+    const params = new HttpParams().set('fecha', fecha);
+    return this.http.get<ItemAgenda[]>(`${this.url}/barberias/${slug}/agenda`, { params });
+  }
+
+  cambiarEstado(slug: string, citaId: string, accion: AccionCita): Observable<{ id: string; estado: string }> {
+    return this.http.post<{ id: string; estado: string }>(`${this.url}/barberias/${slug}/citas/${citaId}/${accion}`, {});
   }
 }
 

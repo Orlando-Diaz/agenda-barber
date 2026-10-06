@@ -1,0 +1,38 @@
+.barra {
+  background: var(--cobalto);
+  color: var(--blanco);
+}
+
+.barra__contenido {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.barra__rotulo {
+  font-size: clamp(1.9rem, 8vw, 2.75rem);
+}
+
+.barra__publica {
+  display: inline-block;
+  margin-top: 0.35rem;
+  color: #dbe4fb;
+  font-size: 0.9rem;
+  text-underline-offset: 3px;
+}
+
+.barra__salir {
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  font-weight: 650;
+  color: var(--blanco);
+  background: transparent;
+  border: 1.5px solid #8fa6e6;
+  border-radius: 4px;
+}
+
+.barra :focus-visible {
+  outline-color: var(--blanco);
+}

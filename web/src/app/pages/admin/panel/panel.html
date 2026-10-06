@@ -1,0 +1,13 @@
+<header class="barra">
+  <div class="pagina barra__contenido">
+    <div>
+      <p class="barra__rotulo rotulo">{{ sesion()?.nombreBarberia }}</p>
+      <a class="barra__publica" [href]="'/b/' + sesion()?.slug" target="_blank" rel="noopener">
+        Ver mi página de reservas
+      </a>
+    </div>
+    <button type="button" class="barra__salir" (click)="sesionService.salir()">Salir</button>
+  </div>
+</header>
+
+<router-outlet />

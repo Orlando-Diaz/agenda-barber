@@ -1,0 +1,214 @@
+.agenda {
+  padding: 1.5rem 1.25rem 4rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: var(--cobalto);
+  margin-bottom: 1rem;
+}
+
+/* ---------- Navegación de días ---------- */
+.dias {
+  display: grid;
+  grid-template-columns: 3rem 1fr 3rem;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.dias__centro {
+  display: grid;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.dias__titulo {
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.dias__titulo::first-letter {
+  text-transform: uppercase;
+}
+
+.dias__salto input {
+  width: 100%;
+  min-height: 2.25rem;
+  padding: 0 0.5rem;
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: 4px;
+}
+
+.paso {
+  min-height: 3rem;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--cobalto);
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: 4px;
+}
+
+.enlace {
+  margin-top: 0.75rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--cobalto);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Resumen ---------- */
+.resumen {
+  margin-top: 1.25rem;
+  padding: 0.75rem 0;
+  border-block: 1px solid var(--junta);
+  color: var(--suave);
+}
+
+.resumen strong {
+  color: var(--tinta);
+}
+
+.resumen--carga {
+  opacity: 0.55;
+}
+
+.resumen__alerta {
+  color: var(--poste);
+  font-weight: 650;
+}
+
+.vacio {
+  margin-top: 2rem;
+  color: var(--suave);
+}
+
+.error {
+  margin-top: 1rem;
+  padding: 0.75rem 0.9rem;
+  border-left: 4px solid var(--poste);
+  background: var(--blanco);
+  font-weight: 600;
+}
+
+/* ---------- Citas ---------- */
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cita {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--junta);
+}
+
+.cita__inicio {
+  display: block;
+  font-size: 2rem;
+  color: var(--cobalto);
+  white-space: nowrap;
+}
+
+.cita__sufijo {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--suave);
+}
+
+.cita__cliente {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.cita__detalle {
+  color: var(--suave);
+  font-size: 0.95rem;
+}
+
+.cita__estado {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1.5px solid var(--junta);
+  border-radius: 999px;
+}
+
+.cita--pendiente .cita__estado {
+  border-color: var(--poste);
+  color: var(--poste);
+}
+
+.cita--confirmada .cita__estado {
+  border-color: var(--cobalto);
+  color: var(--cobalto);
+}
+
+.cita--cancelada,
+.cita--noasistio {
+  opacity: 0.6;
+}
+
+.cita--cancelada .cita__cliente,
+.cita--cancelada .cita__inicio {
+  text-decoration: line-through;
+}
+
+.cita__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.cita__pregunta {
+  font-weight: 650;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0 0.9rem;
+  font-weight: 650;
+  font-size: 0.95rem;
+  color: var(--tinta);
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.boton--principal {
+  color: var(--blanco);
+  background: var(--cobalto);
+  border-color: var(--cobalto);
+}
+
+.boton--peligro {
+  color: var(--blanco);
+  background: var(--poste);
+  border-color: var(--poste);
+}
+
+.boton--enlace {
+  color: var(--cobalto);
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}

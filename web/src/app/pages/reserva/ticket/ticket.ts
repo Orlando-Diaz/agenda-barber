@@ -1,5 +1,6 @@
 import { Component, ElementRef, afterNextRender, computed, input, output, viewChild } from '@angular/core';
 import { Barberia, CitaConfirmada } from '../../../core/models';
+import { enlaceWhatsapp } from '../../../core/whatsapp';
 import { desdeIso, fechaLarga, horaLegible, nombreMes, nombreSemanaLarga, pesos, textoHora } from '../../../core/fechas';
 
 /** La confirmación: un tiquete de turno. */
@@ -23,12 +24,9 @@ export class Ticket {
 
   /** Enlace para escribirle a la barbería por WhatsApp con el turno ya descrito. */
   protected readonly whatsapp = computed(() => {
-    const telefono = this.barberia().telefono?.replace(/\D/g, '');
-    if (!telefono) return null;
     const c = this.cita();
-    const numero = telefono.length === 10 ? `57${telefono}` : telefono; // 57 = Colombia
     const mensaje = `Hola, soy ${c.cliente}. Reservé turno para ${c.servicio} con ${c.barbero} el ${fechaLarga(c.dia)} a las ${textoHora(c.hora)}.`;
-    return `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+    return enlaceWhatsapp(this.barberia().telefono, mensaje);
   });
 
   constructor() {

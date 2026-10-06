@@ -32,6 +32,13 @@ builder.Services.AddScoped<CambiarEstadoCita>();
 builder.Services.AddScoped<RegistrarDueno>();
 builder.Services.AddScoped<IniciarSesion>();
 
+// CORS: qué páginas web pueden llamar a la API desde el navegador (ver "Cors:Origenes" en appsettings)
+var origenes = builder.Configuration.GetSection("Cors:Origenes").Get<string[]>() ?? [];
+builder.Services.AddCors(opciones => opciones.AddPolicy("Web", politica => politica
+    .WithOrigins(origenes)
+    .AllowAnyHeader()
+    .AllowAnyMethod()));
+
 // Autenticación con JWT
 var jwt = builder.Configuration.GetSection("Jwt").Get<JwtOpciones>()
     ?? throw new InvalidOperationException("Falta la sección 'Jwt' en la configuración.");
@@ -75,6 +82,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("Web");     // antes de autenticar: responde las consultas previas ("preflight") del navegador
 app.UseAuthentication(); // primero: ¿quién eres? (lee el token)
 app.UseAuthorization();  // después: ¿puedes entrar aquí?
 app.MapControllers();
