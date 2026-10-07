@@ -32,8 +32,8 @@
   align-items: center;
   gap: 1rem;
   padding: 0 1.25rem;
-  background: var(--tinta);
-  color: var(--blanco);
+  background: var(--noche);
+  color: var(--texto-claro);
   border-top: 0.5rem solid var(--poste);
 }
 
@@ -132,8 +132,8 @@ dd {
   padding: 0 1rem;
   font-weight: 650;
   text-decoration: none;
-  color: var(--blanco);
-  background: var(--cobalto);
+  color: var(--texto-claro);
+  background: var(--accion);
   border: 1.5px solid var(--cobalto);
   border-radius: 4px;
 }

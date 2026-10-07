@@ -32,10 +32,10 @@
 }
 
 .dia[aria-pressed='true'] {
-  background: var(--cobalto);
+  background: var(--accion);
   border-color: var(--cobalto-hondo);
   box-shadow: 0 3px 0 var(--cobalto-hondo);
-  color: var(--blanco);
+  color: var(--texto-claro);
 }
 
 .dia[aria-pressed='true'] .dia__semana,

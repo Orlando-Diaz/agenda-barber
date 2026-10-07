@@ -44,12 +44,12 @@
 }
 
 .baldosa:hover {
-  background: #eaf0fb;
+  background: var(--hover);
 }
 
 .baldosa[aria-pressed='true'] {
-  background: var(--cobalto);
-  color: var(--blanco);
+  background: var(--accion);
+  color: var(--texto-claro);
 }
 
 .baldosa[aria-pressed='true'] .baldosa__sufijo {

@@ -17,11 +17,19 @@
   <header class="cabecera fondo-rotulo fondo-rotulo--vivo">
     <div class="pagina cabecera__contenido">
       <h1 class="rotulo letrero">{{ b.nombre }}</h1>
+      @if (b.direccion) {
+        <p class="direccion">{{ b.direccion }}</p>
+      }
       @if (b.telefono) {
         <a class="tel" [href]="'tel:' + b.telefono">{{ b.telefono }}</a>
       }
     </div>
   </header>
+  @if (urlFoto(); as src) {
+    <div class="portada pagina">
+      <img [src]="src" alt="" width="600" height="338" />
+    </div>
+  }
 
   <main class="pagina">
     @if (cita(); as c) {

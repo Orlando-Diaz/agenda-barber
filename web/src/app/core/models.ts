@@ -5,6 +5,10 @@ export interface Barberia {
   nombre: string;
   slug: string;
   telefono: string | null;
+  direccion: string | null;
+  descripcion: string | null;
+  /** Cambia cada vez que el dueño cambia la foto; null si no tiene. */
+  fotoVersion: number | null;
 }
 
 /** Una barbería en el directorio de la página principal. */
@@ -12,6 +16,11 @@ export interface BarberiaResumen {
   nombre: string;
   slug: string;
   telefono: string | null;
+  direccion: string | null;
+  descripcion: string | null;
+  fotoVersion: number | null;
+  /** El servicio más barato, para mostrar "Desde $X". */
+  precioDesde: number | null;
 }
 
 export interface Servicio {

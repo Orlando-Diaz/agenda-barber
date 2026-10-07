@@ -1,0 +1,82 @@
+.intro {
+  color: var(--suave);
+  margin-bottom: 1rem;
+}
+
+h2 {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1.3rem;
+}
+
+.portada {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--azulejo);
+  border: 1.5px solid var(--junta);
+  border-radius: 12px;
+}
+
+.portada img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.portada--vacia {
+  border-style: dashed;
+}
+
+.portada__texto {
+  color: var(--suave);
+}
+
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.archivo {
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.archivo:focus-within {
+  outline: 3px solid var(--cobalto);
+  outline-offset: 3px;
+}
+
+.btn--ocupado {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  color: var(--tinta);
+  background: var(--blanco);
+  border: 1.5px solid var(--junta);
+  border-radius: var(--radio);
+  resize: vertical;
+}
+
+textarea:focus {
+  border-color: var(--cobalto);
+}
+
+.ok {
+  margin: 0.75rem 0;
+  font-weight: 650;
+  color: var(--cobalto);
+}
+
+form .btn {
+  margin-top: 0.5rem;
+}

@@ -38,6 +38,10 @@ export class Reserva implements OnInit {
   protected readonly noEncontrada = signal(false);
   protected readonly errorCarga = signal<string | null>(null);
   protected readonly barberia = signal<Barberia | null>(null);
+  protected readonly urlFoto = computed(() => {
+    const b = this.barberia();
+    return b?.fotoVersion != null ? this.api.urlFoto(this.slug, b.fotoVersion) : null;
+  });
   protected readonly servicios = signal<Servicio[]>([]);
   protected readonly barberos = signal<Barbero[]>([]);
 

@@ -21,6 +21,11 @@ export class ApiService {
     return this.http.get<Barberia>(`${this.url}/barberias/${slug}`);
   }
 
+  /** Dirección de la foto de portada; la versión evita que el navegador muestre una foto vieja. */
+  urlFoto(slug: string, version: number): string {
+    return `${this.url}/barberias/${slug}/foto?v=${version}`;
+  }
+
   servicios(slug: string): Observable<Servicio[]> {
     return this.http.get<Servicio[]>(`${this.url}/barberias/${slug}/servicios`);
   }
@@ -91,6 +96,19 @@ export class ApiService {
   /** Devuelve el barbero con los horarios que le quedan. */
   quitarHorario(slug: string, barberoId: string, horarioId: string): Observable<Barbero> {
     return this.http.delete<Barbero>(`${this.url}/barberias/${slug}/barberos/${barberoId}/horarios/${horarioId}`);
+  }
+
+  actualizarPerfil(slug: string, direccion: string | null, descripcion: string | null): Observable<Barberia> {
+    return this.http.put<Barberia>(`${this.url}/barberias/${slug}/perfil`, { direccion, descripcion });
+  }
+
+  /** La imagen viaja tal cual en el cuerpo; el tipo (jpeg/png/webp) va en Content-Type. */
+  subirFoto(slug: string, imagen: Blob): Observable<Barberia> {
+    return this.http.put<Barberia>(`${this.url}/barberias/${slug}/foto`, imagen, { headers: { 'Content-Type': imagen.type } });
+  }
+
+  quitarFoto(slug: string): Observable<void> {
+    return this.http.delete<void>(`${this.url}/barberias/${slug}/foto`);
   }
 
   cambiarEstado(slug: string, citaId: string, accion: AccionCita): Observable<{ id: string; estado: string }> {

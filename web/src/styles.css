@@ -3,19 +3,44 @@
 @import '@fontsource-variable/archivo/wdth.css';
 
 :root {
+  color-scheme: light;
   --azulejo: #f1f4f3; /* fondo: azulejo blanco */
-  --blanco: #ffffff;
+  --blanco: #ffffff; /* la superficie de las hojas (en modo oscuro es oscura) */
+  --texto-claro: #ffffff; /* texto sobre azul o rojo: siempre blanco */
   --tinta: #0f1b2d;
+  --noche: #0f1b2d; /* azul casi negro fijo: el tiquete y sus partes */
   --suave: #4a5a6e; /* texto secundario */
-  --cobalto: #1d3fa8; /* color principal */
+  --cobalto: #1d3fa8; /* azul para textos, enlaces y bordes */
+  --accion: #1d3fa8; /* azul de fondo de botones y de lo elegido */
+  --cabecera: #1d3fa8; /* fondo de las cabeceras */
+  --hover: #eaf0fb;
+  --apagado: #aab6be; /* sombra de un botón desactivado */
   --poste: #d7332b; /* rojo de poste: solo para marcar lo importante */
   --junta: #c5cfd6; /* líneas, como la junta entre azulejos */
   --junta-suave: #e2e8e7; /* la junta del fondo de azulejo */
   --cobalto-hondo: #14307f; /* sombra del cobalto: el borde inferior de los botones */
   --poste-hondo: #a8231d;
   --radio: 6px;
+  --radio-boton: 999px;
   --fuente: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ancho-pagina: 34rem;
+}
+
+/* Modo oscuro: azul noche con juntas tenues. Se activa solo si el sistema lo pide, o con el botón. */
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+  --azulejo: #0b1220;
+  --blanco: #151f35;
+  --tinta: #eaf0fb;
+  --suave: #9fb1ca;
+  --cobalto: #8fa9ff;
+  --accion: #2a4fc8;
+  --cabecera: #15286b;
+  --cobalto-hondo: #0f1d52;
+  --junta: #2b3a57;
+  --junta-suave: #141e33;
+  --hover: #1d2b4a;
+  --apagado: #0b1220;
 }
 
 *,
@@ -26,6 +51,7 @@
 
 html {
   font-family: var(--fuente);
+  font-size: 106.25%; /* 17px: un poco más grande para leer cómodo en el celular */
   font-stretch: 100%;
   color: var(--tinta);
   background: var(--azulejo);
@@ -185,10 +211,10 @@ a {
   min-height: 3rem;
   padding: 0 1.25rem;
   font-weight: 650;
-  color: var(--blanco);
-  background: var(--cobalto);
+  color: var(--texto-claro);
+  background: var(--accion);
   border: 0;
-  border-radius: var(--radio);
+  border-radius: var(--radio-boton);
   box-shadow: 0 4px 0 var(--cobalto-hondo);
   transition: transform 0.08s, box-shadow 0.08s;
 }
@@ -201,7 +227,7 @@ a {
 .btn:disabled {
   background: var(--junta);
   color: var(--suave);
-  box-shadow: 0 4px 0 #aab6be;
+  box-shadow: 0 4px 0 var(--apagado);
   cursor: wait;
 }
 
@@ -235,7 +261,7 @@ a {
 }
 
 .btn-chico--peligro.confirmar {
-  color: var(--blanco);
+  color: var(--texto-claro);
   background: var(--poste);
 }
 
@@ -250,8 +276,8 @@ a {
 .fondo-rotulo {
   position: relative;
   padding-bottom: 0.7rem;
-  color: var(--blanco);
-  background-color: var(--cobalto);
+  color: var(--texto-claro);
+  background-color: var(--cabecera);
   background-image:
     linear-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px),
     linear-gradient(90deg, rgb(255 255 255 / 0.07) 1px, transparent 1px),
@@ -329,5 +355,5 @@ app-root {
 }
 
 .atras:hover {
-  background: #eaf0fb;
+  background: var(--hover);
 }

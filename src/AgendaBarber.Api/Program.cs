@@ -49,6 +49,10 @@ builder.Services.AddSingleton(TimeProvider.System);
 // Casos de uso
 builder.Services.AddScoped<ObtenerBarberiaPorSlug>();
 builder.Services.AddScoped<ListarBarberias>();
+builder.Services.AddScoped<ActualizarPerfilBarberia>();
+builder.Services.AddScoped<GuardarFotoBarberia>();
+builder.Services.AddScoped<QuitarFotoBarberia>();
+builder.Services.AddScoped<ObtenerFotoBarberia>();
 builder.Services.AddScoped<CrearServicio>();
 builder.Services.AddScoped<ListarServicios>();
 builder.Services.AddScoped<EditarServicio>();

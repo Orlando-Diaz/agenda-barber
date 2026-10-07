@@ -7,6 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#1D3FA8">
   <meta name="description" content="Reserva tu turno en la barbería sin llamadas ni filas.">
+  <script>
+    // Aplica el tema antes de pintar, para que no parpadee de claro a oscuro
+    try {
+      var t = localStorage.getItem('agendabarber.tema');
+      if (t !== 'claro' && t !== 'oscuro') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+      document.documentElement.dataset.tema = t;
+    } catch (e) {}
+  </script>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>

@@ -43,43 +43,111 @@ h2 {
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.6rem;
+  gap: 1.1rem;
 }
 
-/* Cada barbería es un letrero que se toca entero */
-.barberia {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  min-height: 4rem;
-  padding: 0.6rem 1rem;
+/* Cada barbería es una tarjeta que se toca entera: foto arriba, datos abajo */
+.tarjeta {
+  display: grid;
+  overflow: hidden;
   color: var(--tinta);
   text-decoration: none;
   background: var(--azulejo);
   border: 1.5px solid var(--junta);
-  border-radius: var(--radio);
-  transition: background 0.12s, border-color 0.12s;
+  border-radius: 12px;
+  box-shadow: 0 4px 0 var(--junta);
+  transition: transform 0.1s, box-shadow 0.1s, border-color 0.12s;
 }
 
-.barberia:hover {
-  background: #eaf0fb;
+.tarjeta:hover {
   border-color: var(--cobalto);
 }
 
-.barberia__nombre {
+.tarjeta:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--junta);
+}
+
+.tarjeta__foto {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--cabecera);
+}
+
+.tarjeta__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Sin foto: franjas de poste de barbero y la inicial del nombre */
+.tarjeta__foto--vacia {
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(-45deg, var(--cabecera) 0 18px, var(--texto-claro) 18px 30px, var(--poste) 30px 48px, var(--texto-claro) 48px 60px);
+}
+
+.tarjeta__inicial {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--texto-claro);
+  background: var(--noche);
+  border-radius: 50%;
+}
+
+.tarjeta__cuerpo {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.8rem 1rem 1rem;
+}
+
+.tarjeta__nombre {
   font-size: 1.9rem;
+  line-height: 1.05;
   color: var(--cobalto);
 }
 
-.barberia__accion {
-  flex: none;
-  padding: 0.35rem 0.8rem;
-  font-weight: 650;
+.tarjeta__direccion {
+  color: var(--suave);
   font-size: 0.9rem;
-  color: var(--blanco);
-  background: var(--poste);
+}
+
+.tarjeta__descripcion {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+
+.tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+.tarjeta__precio {
+  font-weight: 700;
+}
+
+.tarjeta__accion {
+  flex: none;
+  padding: 0.45rem 1.1rem;
+  font-weight: 650;
+  color: var(--texto-claro);
+  background: var(--accion);
   border-radius: 999px;
+  box-shadow: 0 3px 0 var(--cobalto-hondo);
 }
 
 .dueno {
@@ -109,9 +177,9 @@ h2 {
   padding: 0 1.25rem;
   font-weight: 650;
   text-decoration: none;
-  color: var(--blanco);
-  background: var(--cobalto);
-  border-radius: var(--radio);
+  color: var(--texto-claro);
+  background: var(--accion);
+  border-radius: var(--radio-boton);
   box-shadow: 0 4px 0 var(--cobalto-hondo);
   transition: transform 0.08s, box-shadow 0.08s;
 }

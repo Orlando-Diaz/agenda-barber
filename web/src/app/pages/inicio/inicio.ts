@@ -1,3 +1,4 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService, mensajeDeError } from '../../core/api.service';
@@ -10,7 +11,7 @@ function limpiar(texto: string): string {
 
 @Component({
   selector: 'app-inicio',
-  imports: [RouterLink],
+  imports: [RouterLink, CurrencyPipe],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })
@@ -36,6 +37,10 @@ export class Inicio implements OnInit {
       next: (lista) => this.barberias.set(lista),
       error: (e) => this.error.set(mensajeDeError(e, 'No pudimos cargar las barberías.')),
     });
+  }
+
+  protected foto(b: BarberiaResumen): string | null {
+    return b.fotoVersion === null ? null : this.api.urlFoto(b.slug, b.fotoVersion);
   }
 
   protected escribir(evento: Event): void {

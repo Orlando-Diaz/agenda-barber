@@ -22,14 +22,14 @@
   min-height: 2.5rem;
   padding: 0 1rem;
   font-weight: 650;
-  color: var(--blanco);
+  color: var(--texto-claro);
   background: transparent;
   border: 1.5px solid #8fa6e6;
   border-radius: var(--radio);
 }
 
 .barra :focus-visible {
-  outline-color: var(--blanco);
+  outline-color: var(--texto-claro);
 }
 
 .barra__nav {
@@ -49,7 +49,7 @@
 }
 
 .barra__nav a.activa {
-  color: var(--blanco);
+  color: var(--texto-claro);
   border-bottom-color: var(--poste);
   background: rgb(255 255 255 / 0.1);
 }

@@ -21,6 +21,7 @@ public static class DependencyInjection
 
         services.AddDbContext<AgendaDbContext>(opciones => opciones.UseNpgsql(conexion));
         services.AddScoped<IBarberiaRepositorio, BarberiaRepositorio>();
+        services.AddScoped<IFotoBarberiaRepositorio, FotoBarberiaRepositorio>();
         services.AddScoped<IServicioRepositorio, ServicioRepositorio>();
         services.AddScoped<IBarberoRepositorio, BarberoRepositorio>();
         services.AddScoped<ICitaRepositorio, CitaRepositorio>();

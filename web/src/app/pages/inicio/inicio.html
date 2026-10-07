@@ -25,9 +25,31 @@
       <ul class="lista">
         @for (b of visibles(); track b.slug) {
           <li>
-            <a class="barberia" [routerLink]="['/b', b.slug]">
-              <span class="barberia__nombre rotulo">{{ b.nombre }}</span>
-              <span class="barberia__accion">Reservar</span>
+            <a class="tarjeta" [routerLink]="['/b', b.slug]">
+              <span class="tarjeta__foto" [class.tarjeta__foto--vacia]="!b.fotoVersion">
+                @if (foto(b); as src) {
+                  <img [src]="src" alt="" loading="lazy" width="600" height="338" />
+                } @else {
+                  <span class="tarjeta__inicial rotulo" aria-hidden="true">{{ b.nombre.charAt(0) }}</span>
+                }
+              </span>
+              <span class="tarjeta__cuerpo">
+                <span class="tarjeta__nombre rotulo">{{ b.nombre }}</span>
+                @if (b.direccion) {
+                  <span class="tarjeta__direccion">{{ b.direccion }}</span>
+                }
+                @if (b.descripcion) {
+                  <span class="tarjeta__descripcion">{{ b.descripcion }}</span>
+                }
+                <span class="tarjeta__pie">
+                  @if (b.precioDesde !== null) {
+                    <span class="tarjeta__precio">Desde {{ b.precioDesde | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+                  } @else {
+                    <span></span>
+                  }
+                  <span class="tarjeta__accion">Reservar</span>
+                </span>
+              </span>
             </a>
           </li>
         } @empty {

@@ -17,6 +17,8 @@ public class BarberiaConfiguration : IEntityTypeConfiguration<Barberia>
 
         b.Property(x => x.Nombre).HasMaxLength(100).IsRequired();
         b.Property(x => x.Telefono).HasMaxLength(30);
+        b.Property(x => x.Direccion).HasMaxLength(150);
+        b.Property(x => x.Descripcion).HasMaxLength(300);
         b.Property(x => x.ZonaHoraria).HasMaxLength(60).IsRequired();
     }
 }

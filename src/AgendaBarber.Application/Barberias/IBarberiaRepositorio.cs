@@ -10,5 +10,9 @@ public interface IBarberiaRepositorio
     Task<Barberia?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default);
 
     /// <summary>Barberías listas para recibir reservas (con al menos un servicio y un barbero con horario), por nombre.</summary>
-    Task<IReadOnlyList<Barberia>> ListarReservablesAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<BarberiaEnLista>> ListarReservablesAsync(CancellationToken ct = default);
+
+    /// <summary>La barbería con seguimiento de cambios, para modificar su perfil.</summary>
+    Task<Barberia?> ObtenerParaEditarPorSlugAsync(string slug, CancellationToken ct = default);
+    Task GuardarCambiosAsync(CancellationToken ct = default);
 }

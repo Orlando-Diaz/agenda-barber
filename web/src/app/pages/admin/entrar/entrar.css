@@ -63,10 +63,10 @@ input:focus {
 button[type='submit'] {
   min-height: 3rem;
   font-weight: 650;
-  color: var(--blanco);
-  background: var(--cobalto);
+  color: var(--texto-claro);
+  background: var(--accion);
   border: 0;
-  border-radius: var(--radio);
+  border-radius: var(--radio-boton);
   box-shadow: 0 4px 0 var(--cobalto-hondo);
   transition: transform 0.08s, box-shadow 0.08s;
 }
@@ -79,7 +79,7 @@ button[type='submit']:active:not(:disabled) {
 button[type='submit']:disabled {
   background: var(--junta);
   color: var(--suave);
-  box-shadow: 0 4px 0 #aab6be;
+  box-shadow: 0 4px 0 var(--apagado);
   cursor: wait;
 }
 
