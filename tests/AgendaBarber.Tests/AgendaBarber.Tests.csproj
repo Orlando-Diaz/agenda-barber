@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AgendaBarber.Domain\AgendaBarber.Domain.csproj" />
     <ProjectReference Include="..\..\src\AgendaBarber.Application\AgendaBarber.Application.csproj" />
+    <ProjectReference Include="..\..\src\AgendaBarber.Infrastructure\AgendaBarber.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

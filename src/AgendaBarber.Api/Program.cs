@@ -7,6 +7,8 @@ using AgendaBarber.Application.Citas;
 using AgendaBarber.Application.Disponibilidad;
 using AgendaBarber.Application.Servicios;
 using AgendaBarber.Infrastructure;
+using AgendaBarber.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authorization;
@@ -76,6 +78,9 @@ var jwt = builder.Configuration.GetSection("Jwt").Get<JwtOpciones>()
 if (Encoding.UTF8.GetByteCount(jwt.Clave) < 32)
     throw new InvalidOperationException("Jwt:Clave debe tener al menos 32 caracteres.");
 
+if (!builder.Environment.IsDevelopment() && jwt.Clave.Contains("solo-para-desarrollo"))
+    throw new InvalidOperationException("Estás usando la clave JWT de desarrollo fuera de desarrollo. Define la variable de entorno Jwt__Clave.");
+
 builder.Services.Configure<JwtOpciones>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton<IGeneradorToken, GeneradorTokenJwt>();
 
@@ -106,6 +111,13 @@ builder.Services.AddAuthorizationBuilder()
         .AddRequirements(new DuenoDeLaBarberiaRequirement()));
 
 var app = builder.Build();
+
+// En producción (Docker) la base se actualiza sola al arrancar: Base__MigrarAlIniciar=true
+if (builder.Configuration.GetValue<bool>("Base:MigrarAlIniciar"))
+{
+    using var alcance = app.Services.CreateScope();
+    alcance.ServiceProvider.GetRequiredService<AgendaDbContext>().Database.Migrate();
+}
 
 app.UseForwardedHeaders();
 app.UseExceptionHandler();
