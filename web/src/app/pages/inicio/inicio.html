@@ -12,7 +12,12 @@
     @if (error(); as e) {
       <p class="aviso-error" role="alert">{{ e }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></p>
     } @else if (barberias() === null) {
-      <p class="vacio" role="status">Cargando barberías…</p>
+      <p class="vacio" role="status">
+        Cargando barberías…
+        @if (tardando()) {
+          <br />El servidor gratuito estaba dormido y se está despertando. Puede tardar hasta un minuto.
+        }
+      </p>
     } @else if (barberias()!.length === 0) {
       <p class="vacio">Todavía no hay barberías recibiendo reservas. Si tienes una, créala abajo y aparecerá aquí.</p>
     } @else {

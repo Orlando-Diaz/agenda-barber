@@ -27,15 +27,28 @@ export class Inicio implements OnInit {
     return (this.barberias() ?? []).filter((b) => !q || limpiar(b.nombre).includes(q));
   });
 
+  /** Los servidores gratuitos se duermen: si tarda, se avisa que está despertando. */
+  protected readonly tardando = signal(false);
+
   ngOnInit(): void {
     this.cargar();
   }
 
   protected cargar(): void {
     this.error.set(null);
+    this.tardando.set(false);
+    const aviso = setTimeout(() => this.tardando.set(true), 4000);
     this.api.barberias().subscribe({
-      next: (lista) => this.barberias.set(lista),
-      error: (e) => this.error.set(mensajeDeError(e, 'No pudimos cargar las barberías.')),
+      next: (lista) => {
+        clearTimeout(aviso);
+        this.tardando.set(false);
+        this.barberias.set(lista);
+      },
+      error: (e) => {
+        clearTimeout(aviso);
+        this.tardando.set(false);
+        this.error.set(mensajeDeError(e, 'No pudimos cargar las barberías.'));
+      },
     });
   }
 

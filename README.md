@@ -66,3 +66,18 @@ Opcionales: `PORT` (por defecto 8080), `Base__MigrarAlIniciar` (ya viene en `tru
 Al frontend se le indica la URL de la API en `web/src/app/core/api.config.ts` antes de compilar (`npm run build`); el resultado queda en `web/dist/web/browser` y se puede subir a cualquier hosting estático. Como es una SPA, el hosting debe devolver `index.html` para rutas desconocidas.
 
 Detrás de un proxy (Render, nginx) la API lee la IP real del cliente de `X-Forwarded-For` para el límite de intentos del login (10 por minuto por IP).
+
+## Desplegar gratis (demo / portafolio)
+
+| Pieza | Servicio gratuito | Notas |
+|---|---|---|
+| Base de datos | [Neon](https://neon.com) | Plan gratuito permanente (1 GB). Se duerme tras 5 min sin uso y despierta sola. |
+| API | [Render](https://render.com) (Web Service, Docker) | Se duerme tras 15 min sin tráfico; la primera visita tarda ~1 min en despertar. |
+| Web | [Vercel](https://vercel.com) | `web/vercel.json` ya redirige las rutas a `index.html`. |
+
+Orden: 1) crear la base en Neon, 2) crear la API en Render con las variables de la tabla de arriba, 3) publicar `web/` en Vercel, 4) volver a Render y poner la URL de Vercel en `Cors__Origenes__0`.
+
+La cadena de conexión de Neon se escribe para Npgsql así (no con el formato `postgresql://`):
+`Host=ep-xxxx.aws.neon.tech;Database=neondb;Username=neondb_owner;Password=...;SSL Mode=Require`
+
+Cada cambio nuevo en `main` se despliega solo en Render y Vercel. Si el cambio toca la base de datos, crea la migración antes (`dotnet ef migrations add ...`) y súbela con el commit: la API la aplica al arrancar.
