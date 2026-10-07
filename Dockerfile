@@ -16,11 +16,18 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=build /app .
 USER $APP_UID
-# DOTNET_EnableWriteXorExecute=0: .NET se cierra con "status 139" (fallo de memoria) al arrancar en algunos
-# entornos de contenedor restringidos como el plan gratuito de Render; esta opción lo evita.
+# Ajustes para que .NET arranque en entornos de contenedor muy limitados (plan gratuito de Render: 512 MB y poca CPU).
+# Sin ellos la imagen se cerraba con "status 139" (fallo de memoria) antes de escribir un solo log.
+#  - GCHeapHardLimit: limita el heap a ~320 MB en vez de reservar un espacio de memoria enorme
+#  - EnableDiagnostics=0: no abre los canales de diagnóstico (no se usan en producción)
+#  - EnableWriteXorExecute=0, TieredPGO=0, gcConcurrent=0, EnableAVX512F=0: evitan fallos conocidos del JIT y del GC
 ENV ASPNETCORE_ENVIRONMENT=Production \
     Base__MigrarAlIniciar=true \
+    DOTNET_GCHeapHardLimit=0x14000000 \
+    DOTNET_EnableDiagnostics=0 \
     DOTNET_EnableWriteXorExecute=0 \
-    DOTNET_TieredPGO=0
+    DOTNET_TieredPGO=0 \
+    DOTNET_gcConcurrent=0 \
+    DOTNET_EnableAVX512F=0
 # Render y similares indican el puerto en PORT; si no existe, usa 8080
 CMD ["sh", "-c", "ASPNETCORE_URLS=http://+:${PORT:-8080} exec dotnet AgendaBarber.Api.dll"]
