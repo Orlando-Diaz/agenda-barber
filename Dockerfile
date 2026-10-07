@@ -16,7 +16,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=build /app .
 USER $APP_UID
+# DOTNET_EnableWriteXorExecute=0: .NET se cierra con "status 139" (fallo de memoria) al arrancar en algunos
+# entornos de contenedor restringidos como el plan gratuito de Render; esta opción lo evita.
 ENV ASPNETCORE_ENVIRONMENT=Production \
-    Base__MigrarAlIniciar=true
+    Base__MigrarAlIniciar=true \
+    DOTNET_EnableWriteXorExecute=0 \
+    DOTNET_TieredPGO=0
 # Render y similares indican el puerto en PORT; si no existe, usa 8080
 CMD ["sh", "-c", "ASPNETCORE_URLS=http://+:${PORT:-8080} exec dotnet AgendaBarber.Api.dll"]
