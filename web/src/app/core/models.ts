@@ -15,6 +15,7 @@ export interface Servicio {
 }
 
 export interface HorarioBarbero {
+  id: string;
   dia: number; // 0 = domingo ... 6 = sábado
   nombreDia: string;
   inicio: string;

@@ -7,7 +7,7 @@ import { SesionService } from '../../../core/sesion.service';
 
 interface DiaAgrupado {
   nombre: string;
-  tramos: string[];
+  tramos: { id: string; texto: string }[];
 }
 
 @Component({
@@ -31,6 +31,12 @@ export class Barberos implements OnInit {
   protected readonly guardando = signal<string | null>(null);
   protected readonly errorHorario = signal<{ id: string; mensaje: string } | null>(null);
 
+  /** Barbero que se renombra / que espera confirmación de quitar / ocupado, y el error de esa tarjeta. */
+  protected readonly renombrando = signal<string | null>(null);
+  protected readonly confirmando = signal<string | null>(null);
+  protected readonly ocupado = signal<string | null>(null);
+  protected readonly errorBarberoFila = signal<{ id: string; mensaje: string } | null>(null);
+
   /** Cada barbero con sus horarios agrupados por día, en orden de semana. */
   protected readonly vista = computed(() =>
     (this.barberos() ?? []).map((b) => ({
@@ -38,7 +44,7 @@ export class Barberos implements OnInit {
       porDia: DIAS_LUNES_A_DOMINGO.flatMap((dia): DiaAgrupado[] => {
         const tramos = b.horarios
           .filter((h) => h.dia === dia)
-          .map((h) => `${textoHora(h.inicio)} – ${textoHora(h.fin)}`);
+          .map((h) => ({ id: h.id, texto: `${textoHora(h.inicio)} – ${textoHora(h.fin)}` }));
         return tramos.length ? [{ nombre: nombreDia(dia), tramos }] : [];
       }),
     })),
@@ -114,6 +120,77 @@ export class Barberos implements OnInit {
           this.cargar(); // si falló a la mitad, algunos días ya quedaron guardados: se muestra el estado real
         },
       });
+  }
+
+  protected renombrar(b: Barbero): void {
+    this.renombrando.set(b.id);
+    this.confirmando.set(null);
+    this.errorBarberoFila.set(null);
+  }
+
+  protected cancelar(): void {
+    this.renombrando.set(null);
+    this.confirmando.set(null);
+    this.errorBarberoFila.set(null);
+  }
+
+  protected guardarNombre(evento: Event, form: HTMLFormElement, b: Barbero): void {
+    evento.preventDefault();
+    if (this.ocupado()) return;
+    const nombre = (form.elements.namedItem('nombre') as HTMLInputElement).value.trim();
+
+    this.ocupado.set(b.id);
+    this.errorBarberoFila.set(null);
+    this.api.editarBarbero(this.slug, b.id, nombre).subscribe({
+      next: (actualizado) => {
+        this.reemplazar(actualizado);
+        this.ocupado.set(null);
+        this.renombrando.set(null);
+      },
+      error: (e) => {
+        this.ocupado.set(null);
+        this.errorBarberoFila.set({ id: b.id, mensaje: mensajeDeError(e, 'No pudimos cambiar el nombre.') });
+      },
+    });
+  }
+
+  /** Dos pasos: el primer clic pide confirmación, el segundo quita. */
+  protected quitar(b: Barbero): void {
+    if (this.confirmando() !== b.id) {
+      this.confirmando.set(b.id);
+      this.renombrando.set(null);
+      this.errorBarberoFila.set(null);
+      return;
+    }
+    if (this.ocupado()) return;
+    this.ocupado.set(b.id);
+    this.api.quitarBarbero(this.slug, b.id).subscribe({
+      next: () => {
+        this.barberos.update((lista) => lista?.filter((x) => x.id !== b.id) ?? null);
+        this.ocupado.set(null);
+        this.confirmando.set(null);
+      },
+      error: (e) => {
+        this.ocupado.set(null);
+        this.errorBarberoFila.set({ id: b.id, mensaje: mensajeDeError(e, 'No pudimos quitar al barbero.') });
+      },
+    });
+  }
+
+  protected quitarHorario(b: Barbero, horarioId: string): void {
+    if (this.ocupado()) return;
+    this.ocupado.set(b.id);
+    this.errorBarberoFila.set(null);
+    this.api.quitarHorario(this.slug, b.id, horarioId).subscribe({
+      next: (actualizado) => {
+        this.reemplazar(actualizado);
+        this.ocupado.set(null);
+      },
+      error: (e) => {
+        this.ocupado.set(null);
+        this.errorBarberoFila.set({ id: b.id, mensaje: mensajeDeError(e, 'No pudimos quitar el horario.') });
+      },
+    });
   }
 
   private reemplazar(actualizado: Barbero): void {

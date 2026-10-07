@@ -8,7 +8,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
   padding: 0.9rem 0;
   border-bottom: 1px solid var(--junta);
 }
@@ -23,9 +24,23 @@
 }
 
 .item__precio {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   color: var(--cobalto);
   white-space: nowrap;
+}
+
+.item__datos {
+  flex: 1 1 12rem;
+}
+
+.item__form {
+  flex: 1 1 100%;
+}
+
+.item__aviso {
+  margin-top: 0.4rem;
+  color: var(--poste);
+  font-weight: 600;
 }
 
 .enlace {

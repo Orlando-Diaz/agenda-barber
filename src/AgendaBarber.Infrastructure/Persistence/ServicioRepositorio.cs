@@ -23,4 +23,10 @@ public class ServicioRepositorio(AgendaDbContext db) : IServicioRepositorio
         db.Servicios
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == servicioId && s.BarberiaId == barberiaId && s.Activo, ct);
+
+    public Task<Servicio?> ObtenerParaEditarAsync(Guid barberiaId, Guid servicioId, CancellationToken ct = default) =>
+        db.Servicios
+            .FirstOrDefaultAsync(s => s.Id == servicioId && s.BarberiaId == barberiaId && s.Activo, ct);
+
+    public Task GuardarCambiosAsync(CancellationToken ct = default) => db.SaveChangesAsync(ct);
 }

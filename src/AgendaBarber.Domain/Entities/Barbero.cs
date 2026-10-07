@@ -12,13 +12,11 @@ public class Barbero
 
     public Barbero(Guid barberiaId, string nombre)
     {
-        nombre = nombre?.Trim() ?? "";
-        if (nombre.Length is < 2 or > 80)
-            throw new DomainException("El nombre del barbero debe tener entre 2 y 80 caracteres.");
-
+        Nombre = ValidarNombre(nombre);
         BarberiaId = barberiaId;
-        Nombre = nombre;
     }
+
+    public void Renombrar(string nombre) => Nombre = ValidarNombre(nombre);
 
     /// <summary>
     /// Agrega un tramo de trabajo (p. ej. lunes 9:00–12:00). Un día puede tener varios tramos
@@ -35,5 +33,23 @@ public class Barbero
         Horarios.Add(nuevo);
     }
 
+    /// <summary>Quita un tramo de trabajo. Devuelve false si el barbero no tiene ese horario.</summary>
+    public bool QuitarHorario(Guid horarioId)
+    {
+        var horario = Horarios.FirstOrDefault(h => h.Id == horarioId);
+        if (horario is null) return false;
+
+        Horarios.Remove(horario);
+        return true;
+    }
+
     public void Desactivar() => Activo = false;
+
+    private static string ValidarNombre(string nombre)
+    {
+        nombre = nombre?.Trim() ?? "";
+        if (nombre.Length is < 2 or > 80)
+            throw new DomainException("El nombre del barbero debe tener entre 2 y 80 caracteres.");
+        return nombre;
+    }
 }

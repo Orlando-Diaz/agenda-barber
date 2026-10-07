@@ -8,12 +8,38 @@ using AgendaBarber.Application.Disponibilidad;
 using AgendaBarber.Application.Servicios;
 using AgendaBarber.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddExceptionHandler<ManejadorDeExcepciones>();
+builder.Services.AddProblemDetails();
+
+// Detrás de un proxy (Render, nginx...) la IP real del cliente llega en X-Forwarded-For.
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    o.KnownNetworks.Clear();
+    o.KnownProxies.Clear();
+});
+
+// Límite de intentos en login y registro: frena a quien prueba contraseñas sin parar.
+builder.Services.AddRateLimiter(o =>
+{
+    o.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    o.AddPolicy("auth", contexto => RateLimitPartition.GetFixedWindowLimiter(
+        contexto.Connection.RemoteIpAddress?.ToString() ?? "desconocida",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+    o.OnRejected = async (ctx, ct) =>
+    {
+        ctx.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        await ctx.HttpContext.Response.WriteAsJsonAsync(new { error = "Demasiados intentos. Espera un minuto e intenta de nuevo." }, ct);
+    };
+});
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
@@ -22,9 +48,14 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<ObtenerBarberiaPorSlug>();
 builder.Services.AddScoped<CrearServicio>();
 builder.Services.AddScoped<ListarServicios>();
+builder.Services.AddScoped<EditarServicio>();
+builder.Services.AddScoped<QuitarServicio>();
 builder.Services.AddScoped<CrearBarbero>();
 builder.Services.AddScoped<AgregarHorarioBarbero>();
 builder.Services.AddScoped<ListarBarberos>();
+builder.Services.AddScoped<EditarBarbero>();
+builder.Services.AddScoped<QuitarBarbero>();
+builder.Services.AddScoped<QuitarHorarioBarbero>();
 builder.Services.AddScoped<ConsultarDisponibilidad>();
 builder.Services.AddScoped<ReservarCita>();
 builder.Services.AddScoped<ConsultarAgenda>();
@@ -76,12 +107,16 @@ builder.Services.AddAuthorizationBuilder()
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseCors("Web");     // antes de autenticar: responde las consultas previas ("preflight") del navegador
 app.UseAuthentication(); // primero: ¿quién eres? (lee el token)
 app.UseAuthorization();  // después: ¿puedes entrar aquí?

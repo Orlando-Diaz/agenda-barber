@@ -61,6 +61,27 @@ export class ApiService {
     return this.http.post<Barbero>(`${this.url}/barberias/${slug}/barberos/${barberoId}/horarios`, { dia, inicio, fin });
   }
 
+  editarServicio(slug: string, servicioId: string, datos: NuevoServicio): Observable<Servicio> {
+    return this.http.put<Servicio>(`${this.url}/barberias/${slug}/servicios/${servicioId}`, datos);
+  }
+
+  quitarServicio(slug: string, servicioId: string): Observable<void> {
+    return this.http.delete<void>(`${this.url}/barberias/${slug}/servicios/${servicioId}`);
+  }
+
+  editarBarbero(slug: string, barberoId: string, nombre: string): Observable<Barbero> {
+    return this.http.put<Barbero>(`${this.url}/barberias/${slug}/barberos/${barberoId}`, { nombre });
+  }
+
+  quitarBarbero(slug: string, barberoId: string): Observable<void> {
+    return this.http.delete<void>(`${this.url}/barberias/${slug}/barberos/${barberoId}`);
+  }
+
+  /** Devuelve el barbero con los horarios que le quedan. */
+  quitarHorario(slug: string, barberoId: string, horarioId: string): Observable<Barbero> {
+    return this.http.delete<Barbero>(`${this.url}/barberias/${slug}/barberos/${barberoId}/horarios/${horarioId}`);
+  }
+
   cambiarEstado(slug: string, citaId: string, accion: AccionCita): Observable<{ id: string; estado: string }> {
     return this.http.post<{ id: string; estado: string }>(`${this.url}/barberias/${slug}/citas/${citaId}/${accion}`, {});
   }

@@ -11,11 +11,57 @@
     <ul class="lista">
       @for (s of servicios(); track s.id) {
         <li class="item">
-          <div>
-            <p class="item__nombre">{{ s.nombre }}</p>
-            <p class="item__detalle">{{ s.duracionMinutos }} min</p>
-          </div>
-          <p class="item__precio rotulo">{{ precio(s) }}</p>
+          @if (editando() === s.id) {
+            <form class="formulario item__form" #fe (submit)="guardarEdicion($event, fe, s)" novalidate>
+              <div class="campo">
+                <label [for]="'n-' + s.id">Nombre</label>
+                <input [id]="'n-' + s.id" name="nombre" type="text" maxlength="80" [value]="s.nombre" autocomplete="off" required />
+              </div>
+              <div class="fila-2">
+                <div class="campo">
+                  <label [for]="'d-' + s.id">Duración (min)</label>
+                  <input [id]="'d-' + s.id" name="duracion" type="number" inputmode="numeric" min="5" max="480" step="5" [value]="s.duracionMinutos" required />
+                </div>
+                <div class="campo">
+                  <label [for]="'p-' + s.id">Precio (COP)</label>
+                  <input [id]="'p-' + s.id" name="precio" type="number" inputmode="numeric" min="0" step="1000" [value]="s.precio" required />
+                </div>
+              </div>
+              @if (errorFila(); as ef) {
+                @if (ef.id === s.id) {
+                  <p class="aviso-error" role="alert">{{ ef.mensaje }}</p>
+                }
+              }
+              <div class="acciones">
+                <button type="submit" class="btn" [disabled]="ocupado() === s.id">{{ ocupado() === s.id ? 'Guardando…' : 'Guardar' }}</button>
+                <button type="button" class="btn-chico" (click)="cancelar()">Cancelar</button>
+              </div>
+            </form>
+          } @else {
+            <div class="item__datos">
+              <p class="item__nombre">{{ s.nombre }}</p>
+              <p class="item__detalle">{{ s.duracionMinutos }} min · <span class="rotulo item__precio">{{ precio(s) }}</span></p>
+              @if (errorFila(); as ef) {
+                @if (ef.id === s.id) {
+                  <p class="aviso-error" role="alert">{{ ef.mensaje }}</p>
+                }
+              }
+              @if (confirmando() === s.id) {
+                <p class="item__aviso">¿Quitar este servicio? Ya no se podrá reservar; las citas anteriores se conservan.</p>
+              }
+            </div>
+            <div class="acciones">
+              @if (confirmando() !== s.id) {
+                <button type="button" class="btn-chico" (click)="editar(s)">Editar</button>
+              }
+              <button type="button" class="btn-chico btn-chico--peligro" [class.confirmar]="confirmando() === s.id" [disabled]="ocupado() === s.id" (click)="quitar(s)">
+                {{ confirmando() === s.id ? 'Sí, quitar' : 'Quitar' }}
+              </button>
+              @if (confirmando() === s.id) {
+                <button type="button" class="btn-chico" (click)="cancelar()">No</button>
+              }
+            </div>
+          }
         </li>
       }
     </ul>

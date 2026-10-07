@@ -1,6 +1,7 @@
 using AgendaBarber.Application.Autenticacion;
 using AgendaBarber.Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AgendaBarber.Api.Controllers;
 
@@ -9,6 +10,7 @@ public record LoginRequest(string Email, string Password);
 
 [ApiController]
 [Route("api/auth")]
+[EnableRateLimiting("auth")]
 public class AuthController(RegistrarDueno registrarDueno, IniciarSesion iniciarSesion) : ControllerBase
 {
     [HttpPost("registro")]

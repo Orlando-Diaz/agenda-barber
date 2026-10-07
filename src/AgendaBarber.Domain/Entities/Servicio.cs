@@ -14,6 +14,22 @@ public class Servicio
 
     public Servicio(Guid barberiaId, string nombre, int duracionMinutos, decimal precio)
     {
+        (Nombre, DuracionMinutos, Precio) = Validar(nombre, duracionMinutos, precio);
+        BarberiaId = barberiaId;
+    }
+
+    /// <summary>
+    /// Cambia los datos del servicio. Las citas ya agendadas no se tocan: cada cita guarda el precio
+    /// y la hora de fin que tenía al reservarse. El cambio aplica a las reservas nuevas.
+    /// </summary>
+    public void Editar(string nombre, int duracionMinutos, decimal precio) =>
+        (Nombre, DuracionMinutos, Precio) = Validar(nombre, duracionMinutos, precio);
+
+    public void Desactivar() => Activo = false;
+
+    // Las mismas reglas al crear y al editar: así no pueden quedar desalineadas.
+    private static (string Nombre, int DuracionMinutos, decimal Precio) Validar(string nombre, int duracionMinutos, decimal precio)
+    {
         nombre = nombre?.Trim() ?? "";
         if (nombre.Length is < 2 or > 80)
             throw new DomainException("El nombre del servicio debe tener entre 2 y 80 caracteres.");
@@ -22,11 +38,6 @@ public class Servicio
         if (precio < 0)
             throw new DomainException("El precio no puede ser negativo.");
 
-        BarberiaId = barberiaId;
-        Nombre = nombre;
-        DuracionMinutos = duracionMinutos;
-        Precio = precio;
+        return (nombre, duracionMinutos, precio);
     }
-
-    public void Desactivar() => Activo = false;
 }

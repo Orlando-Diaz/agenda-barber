@@ -11,7 +11,41 @@
 
   @for (b of vista(); track b.id) {
     <section class="barbero" [attr.aria-labelledby]="'b-' + b.id">
-      <h2 [id]="'b-' + b.id">{{ b.nombre }}</h2>
+      @if (renombrando() === b.id) {
+        <form class="formulario" #fr (submit)="guardarNombre($event, fr, b)" novalidate>
+          <div class="campo">
+            <label [for]="'nom-' + b.id">Nombre</label>
+            <input [id]="'nom-' + b.id" name="nombre" type="text" maxlength="80" [value]="b.nombre" autocomplete="off" required />
+          </div>
+          <div class="acciones">
+            <button type="submit" class="btn" [disabled]="ocupado() === b.id">{{ ocupado() === b.id ? 'Guardando…' : 'Guardar' }}</button>
+            <button type="button" class="btn-chico" (click)="cancelar()">Cancelar</button>
+          </div>
+        </form>
+      } @else {
+        <div class="cabecera">
+          <h2 [id]="'b-' + b.id">{{ b.nombre }}</h2>
+          <div class="acciones">
+            @if (confirmando() !== b.id) {
+              <button type="button" class="btn-chico" (click)="renombrar(b)">Renombrar</button>
+            }
+            <button type="button" class="btn-chico btn-chico--peligro" [class.confirmar]="confirmando() === b.id" [disabled]="ocupado() === b.id" (click)="quitar(b)">
+              {{ confirmando() === b.id ? 'Sí, quitar' : 'Quitar' }}
+            </button>
+            @if (confirmando() === b.id) {
+              <button type="button" class="btn-chico" (click)="cancelar()">No</button>
+            }
+          </div>
+        </div>
+        @if (confirmando() === b.id) {
+          <p class="confirmacion">¿Quitar a {{ b.nombre }}? Ya no se podrá reservar con él; sus citas anteriores se conservan.</p>
+        }
+      }
+      @if (errorBarberoFila(); as eb) {
+        @if (eb.id === b.id) {
+          <p class="aviso-error" role="alert">{{ eb.mensaje }}</p>
+        }
+      }
 
       @if (b.porDia.length === 0) {
         <p class="sin-horario">Sin horarios: este barbero todavía no aparece para reservar.</p>
@@ -20,7 +54,14 @@
           @for (d of b.porDia; track d.nombre) {
             <div class="horarios__fila">
               <dt>{{ d.nombre }}</dt>
-              <dd>{{ d.tramos.join(' · ') }}</dd>
+              <dd class="tramos">
+                @for (t of d.tramos; track t.id) {
+                  <span class="tramo">
+                    {{ t.texto }}
+                    <button type="button" class="tramo__quitar" [attr.aria-label]="'Quitar horario ' + d.nombre + ' ' + t.texto" [disabled]="ocupado() === b.id" (click)="quitarHorario(b, t.id)">×</button>
+                  </span>
+                }
+              </dd>
             </div>
           }
         </dl>

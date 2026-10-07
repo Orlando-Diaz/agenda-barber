@@ -18,6 +18,12 @@ export class Servicios implements OnInit {
   protected readonly enviando = signal(false);
   protected readonly error = signal<string | null>(null);
 
+  /** Servicio que se está editando / que espera confirmación de quitar, y el error de esa fila. */
+  protected readonly editando = signal<string | null>(null);
+  protected readonly confirmando = signal<string | null>(null);
+  protected readonly ocupado = signal<string | null>(null);
+  protected readonly errorFila = signal<{ id: string; mensaje: string } | null>(null);
+
   ngOnInit(): void {
     this.cargar();
   }
@@ -58,5 +64,66 @@ export class Servicios implements OnInit {
           this.error.set(mensajeDeError(e, 'No pudimos crear el servicio.'));
         },
       });
+  }
+
+  protected editar(s: Servicio): void {
+    this.editando.set(s.id);
+    this.confirmando.set(null);
+    this.errorFila.set(null);
+  }
+
+  protected cancelar(): void {
+    this.editando.set(null);
+    this.confirmando.set(null);
+    this.errorFila.set(null);
+  }
+
+  protected guardarEdicion(evento: Event, form: HTMLFormElement, s: Servicio): void {
+    evento.preventDefault();
+    if (this.ocupado()) return;
+    const campo = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value;
+
+    this.ocupado.set(s.id);
+    this.errorFila.set(null);
+    this.api
+      .editarServicio(this.slug, s.id, {
+        nombre: campo('nombre').trim(),
+        duracionMinutos: Number(campo('duracion')),
+        precio: Number(campo('precio')),
+      })
+      .subscribe({
+        next: (actualizado) => {
+          this.servicios.update((lista) => lista?.map((x) => (x.id === actualizado.id ? actualizado : x)) ?? null);
+          this.ocupado.set(null);
+          this.editando.set(null);
+        },
+        error: (e) => {
+          this.ocupado.set(null);
+          this.errorFila.set({ id: s.id, mensaje: mensajeDeError(e, 'No pudimos guardar los cambios.') });
+        },
+      });
+  }
+
+  /** Dos pasos: el primer clic pide confirmación, el segundo quita. */
+  protected quitar(s: Servicio): void {
+    if (this.confirmando() !== s.id) {
+      this.confirmando.set(s.id);
+      this.editando.set(null);
+      this.errorFila.set(null);
+      return;
+    }
+    if (this.ocupado()) return;
+    this.ocupado.set(s.id);
+    this.api.quitarServicio(this.slug, s.id).subscribe({
+      next: () => {
+        this.servicios.update((lista) => lista?.filter((x) => x.id !== s.id) ?? null);
+        this.ocupado.set(null);
+        this.confirmando.set(null);
+      },
+      error: (e) => {
+        this.ocupado.set(null);
+        this.errorFila.set({ id: s.id, mensaje: mensajeDeError(e, 'No pudimos quitar el servicio.') });
+      },
+    });
   }
 }

@@ -185,3 +185,38 @@ a {
 .vacio {
   color: var(--suave);
 }
+
+/* Botones pequeños para editar / quitar en las listas del panel */
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-chico {
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: var(--cobalto);
+  background: var(--blanco);
+  border: 1.5px solid var(--cobalto);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-chico--peligro {
+  color: var(--poste);
+  border-color: var(--poste);
+}
+
+.btn-chico--peligro.confirmar {
+  color: var(--blanco);
+  background: var(--poste);
+}
+
+.btn-chico:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
