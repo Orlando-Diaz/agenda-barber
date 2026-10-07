@@ -3,51 +3,84 @@
   padding-bottom: 3rem;
 }
 
-/* ---------- Cabecera: el nombre como rótulo ---------- */
-.cabecera {
-  background: var(--cobalto);
-  color: var(--blanco);
-}
-
+/* ---------- Cabecera: el nombre como letrero (fondo y cinta vienen de .fondo-rotulo) ---------- */
 .cabecera__contenido {
-  padding: 2.5rem 1.25rem 2rem;
+  padding: 1.5rem 1.25rem 1.25rem;
 }
 
 .cabecera h1 {
-  font-size: clamp(3.25rem, 17vw, 5.5rem);
-}
-
-.cabecera p {
-  margin-top: 0.9rem;
-  max-width: 22rem;
-  font-size: 1.1rem;
-  color: #dbe4fb;
+  font-size: clamp(2.6rem, 12vw, 4rem);
 }
 
 .tel {
   display: inline-block;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
+  padding: 0.3rem 0.9rem;
   color: var(--blanco);
   font-weight: 650;
-  text-underline-offset: 3px;
+  text-decoration: none;
+  border: 1.5px solid #8fa6e6;
+  border-radius: 999px;
 }
 
-/* ---------- Paneles: separados por juntas, sin tarjetas ni sombras ---------- */
-.panel {
-  padding: 1.5rem 1.25rem;
-  border-top: 1px solid var(--junta);
+.tel:hover {
+  background: rgb(255 255 255 / 0.12);
 }
 
-.panel:first-child {
-  border-top: 0;
+.tel:focus-visible {
+  outline-color: var(--blanco);
 }
 
-h2 {
-  margin-bottom: 1rem;
-  font-stretch: 75%;
-  font-weight: 800;
-  font-size: 1.6rem;
-  line-height: 1.1;
+/* ---------- Navegación entre pasos ---------- */
+.navegacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.volver {
+  min-height: 2.5rem;
+  padding: 0 0.9rem 0 0.6rem;
+  font-weight: 650;
+  color: var(--cobalto);
+  background: transparent;
+  border: 1.5px solid var(--cobalto);
+  border-radius: var(--radio);
+}
+
+.volver:hover {
+  background: #eaf0fb;
+}
+
+.progreso {
+  font-weight: 650;
+  color: var(--suave);
+}
+
+/* Una rayita por paso: se pinta de rojo hasta donde va el cliente */
+.barra-progreso {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.barra-progreso span {
+  flex: 1;
+  height: 0.4rem;
+  background: var(--junta-suave);
+  border-radius: 999px;
+}
+
+.barra-progreso span.hecho {
+  background: var(--poste);
+}
+
+.contexto {
+  margin: -0.5rem 0 1rem;
+  font-weight: 650;
+  color: var(--cobalto);
 }
 
 /* ---------- Opciones (servicios y barberos) ---------- */
@@ -65,9 +98,10 @@ h2 {
   min-height: 3.75rem;
   padding: 0.75rem 1rem;
   text-align: left;
-  background: var(--blanco);
+  background: var(--azulejo);
   border: 1.5px solid var(--junta);
-  border-radius: 4px;
+  border-radius: var(--radio);
+  transition: background 0.12s, border-color 0.12s;
 }
 
 .opcion__nombre {
@@ -87,13 +121,19 @@ h2 {
 
 .opcion:hover:not(:disabled) {
   border-color: var(--cobalto);
+  background: #eaf0fb;
 }
 
-/* La barra de cobalto a la izquierda marca lo elegido */
+/* Lo elegido se pinta de cobalto, con el mismo relieve de los botones */
 .opcion[aria-checked='true'] {
-  border-color: var(--tinta);
-  box-shadow: inset 0.4rem 0 0 var(--cobalto);
-  padding-left: 1.4rem;
+  color: var(--blanco);
+  background: var(--cobalto);
+  border-color: var(--cobalto-hondo);
+  box-shadow: 0 3px 0 var(--cobalto-hondo);
+}
+
+.opcion[aria-checked='true'] .opcion__detalle {
+  color: #dbe4fb;
 }
 
 .opcion:disabled {
@@ -146,7 +186,11 @@ input {
   padding: 0 0.9rem;
   background: var(--blanco);
   border: 1.5px solid var(--junta);
-  border-radius: 4px;
+  border-radius: var(--radio);
+}
+
+input:focus {
+  border-color: var(--cobalto);
 }
 
 .ayuda {
@@ -170,17 +214,24 @@ input {
   color: var(--blanco);
   background: var(--cobalto);
   border: 0;
-  border-radius: 4px;
+  border-radius: var(--radio);
+  box-shadow: 0 4px 0 var(--cobalto-hondo);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.reservar:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--cobalto-hondo);
 }
 
 .reservar:disabled {
   background: var(--junta);
   color: var(--suave);
+  box-shadow: 0 4px 0 #aab6be;
   cursor: not-allowed;
 }
 
 @media (min-width: 40rem) {
-  .panel,
   .cabecera__contenido {
     padding-inline: 0;
   }

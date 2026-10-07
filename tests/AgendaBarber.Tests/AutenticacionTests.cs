@@ -18,6 +18,8 @@ public class AutenticacionTests
         public Task AgregarAsync(Barberia barberia, CancellationToken ct = default) { Lista.Add(barberia); return Task.CompletedTask; }
         public Task<Barberia?> ObtenerPorSlugAsync(string slug, CancellationToken ct = default) => Task.FromResult(Lista.FirstOrDefault(b => b.Slug == slug));
         public Task<Barberia?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default) => Task.FromResult(Lista.FirstOrDefault(b => b.Id == id));
+        public Task<IReadOnlyList<Barberia>> ListarReservablesAsync(CancellationToken ct = default) =>
+            Task.FromResult<IReadOnlyList<Barberia>>([]);
     }
 
     private sealed class UsuariosFalsos(BarberiasFalsas barberias) : IUsuarioRepositorio

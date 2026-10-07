@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
     <main class="pagina nada">
       <h1 class="rotulo">Esta página no existe</h1>
       <p>Revisa que el enlace esté completo, o busca tu barbería desde el inicio.</p>
-      <a routerLink="/">Ir al inicio</a>
+      <a class="atras" routerLink="/"><span aria-hidden="true">‹</span> Ir al inicio</a>
     </main>
   `,
   styles: `

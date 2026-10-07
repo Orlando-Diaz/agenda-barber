@@ -1,6 +1,31 @@
-<main class="pagina agenda">
+<main class="pagina hoja agenda">
   <h1 class="rotulo">Agenda</h1>
 
+  <div class="modos" role="group" aria-label="Qué ver">
+    <button type="button" class="modo" [attr.aria-pressed]="modo() === 'dia'" (click)="elegirModo('dia')">Por día</button>
+    <button type="button" class="modo" [attr.aria-pressed]="modo() === 'proximas'" (click)="elegirModo('proximas')">Próximas</button>
+  </div>
+
+  @if (modo() === 'proximas') {
+    @if (errorProximas(); as e) {
+      <p class="error" role="alert">{{ e }} <button type="button" class="enlace" (click)="cargarProximas()">Reintentar</button></p>
+    } @else if (proximas() === null) {
+      <p class="vacio">Cargando próximas citas…</p>
+    } @else if (grupos().length === 0) {
+      <p class="vacio">No hay citas próximas. Cuando alguien reserve, aparecerá aquí.</p>
+    } @else {
+      @for (g of grupos(); track g.fecha) {
+        <section class="grupo" [attr.aria-label]="g.titulo">
+          <h2 class="grupo__titulo">{{ g.titulo }}</h2>
+          <ul class="lista">
+            @for (c of g.citas; track c.id) {
+              <ng-container [ngTemplateOutlet]="tarjeta" [ngTemplateOutletContext]="{ $implicit: c }" />
+            }
+          </ul>
+        </section>
+      }
+    }
+  } @else {
   <div class="dias" role="group" aria-label="Cambiar de día">
     <button type="button" class="paso" (click)="mover(-1)" aria-label="Día anterior">‹</button>
     <div class="dias__centro">
@@ -35,44 +60,50 @@
     } @else {
       <ul class="lista">
         @for (c of ordenadas(); track c.id) {
-          <li class="cita" [class]="'cita--' + c.estado.toLowerCase()">
-            <div class="cita__hora">
-              <span class="cita__inicio rotulo">{{ hora(c).numero }}</span>
-              <span class="cita__sufijo">{{ hora(c).sufijo }}</span>
-            </div>
-            <div class="cita__datos">
-              <p class="cita__cliente">{{ c.clienteNombre }}</p>
-              <p class="cita__detalle">{{ c.servicio }} · {{ c.barbero }} · {{ precio(c) }}</p>
-              <p class="cita__estado">{{ estado(c) }}</p>
-
-              @if (errorAccion(); as ea) {
-                @if (ea.id === c.id) {
-                  <p class="error" role="alert">{{ ea.mensaje }}</p>
-                }
-              }
-
-              <div class="cita__acciones">
-                @if (confirmandoCancelar() === c.id) {
-                  <span class="cita__pregunta">¿Cancelar esta cita?</span>
-                  <button type="button" class="boton boton--peligro" [disabled]="ocupada() !== null"
-                    (click)="cancelarConfirmado(c)">Sí, cancelar</button>
-                  <button type="button" class="boton" (click)="noCancelar()">No</button>
-                } @else {
-                  @for (b of acciones(c); track b.accion) {
-                    <button type="button" class="boton" [class.boton--principal]="b.principal"
-                      [disabled]="ocupada() !== null" (click)="pulsar(c, b)">{{ b.etiqueta }}</button>
-                  }
-                  @if (c.estado === 'Pendiente' || c.estado === 'Confirmada') {
-                    @if (recordatorio(c); as wa) {
-                      <a class="boton boton--enlace" [href]="wa">Recordar por WhatsApp</a>
-                    }
-                  }
-                }
-              </div>
-            </div>
-          </li>
+          <ng-container [ngTemplateOutlet]="tarjeta" [ngTemplateOutletContext]="{ $implicit: c }" />
         }
       </ul>
     }
   }
+  }
 </main>
+
+<ng-template #tarjeta let-c>
+<li class="cita" [class]="'cita--' + c.estado.toLowerCase()">
+    <div class="cita__hora">
+      <span class="cita__inicio rotulo">{{ hora(c).numero }}</span>
+      <span class="cita__sufijo">{{ hora(c).sufijo }}</span>
+    </div>
+    <div class="cita__datos">
+      <p class="cita__cliente">{{ c.clienteNombre }}</p>
+      <p class="cita__detalle">{{ c.servicio }} · {{ c.barbero }} · {{ precio(c) }}</p>
+      <p class="cita__estado">{{ estado(c) }}</p>
+
+      @if (errorAccion(); as ea) {
+        @if (ea.id === c.id) {
+          <p class="error" role="alert">{{ ea.mensaje }}</p>
+        }
+      }
+
+      <div class="cita__acciones">
+        @if (confirmandoCancelar() === c.id) {
+          <span class="cita__pregunta">¿Cancelar esta cita?</span>
+          <button type="button" class="boton boton--peligro" [disabled]="ocupada() !== null"
+            (click)="cancelarConfirmado(c)">Sí, cancelar</button>
+          <button type="button" class="boton" (click)="noCancelar()">No</button>
+        } @else {
+          @for (b of acciones(c); track b.accion) {
+            <button type="button" class="boton" [class.boton--principal]="b.principal"
+              [disabled]="ocupada() !== null" (click)="pulsar(c, b)">{{ b.etiqueta }}</button>
+          }
+          @if (c.estado === 'Pendiente' || c.estado === 'Confirmada') {
+            @if (recordatorio(c); as wa) {
+              <a class="boton boton--enlace" [href]="wa">Recordar por WhatsApp</a>
+            }
+          }
+        }
+      </div>
+    </div>
+  </li>
+</ng-template>
+

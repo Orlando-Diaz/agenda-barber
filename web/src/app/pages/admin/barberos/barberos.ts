@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { concatMap, from, last } from 'rxjs';
 import { ApiService, mensajeDeError } from '../../../core/api.service';
@@ -11,6 +12,7 @@ interface DiaAgrupado {
 }
 
 @Component({
+  imports: [RouterLink],
   selector: 'app-barberos',
   templateUrl: './barberos.html',
   styleUrl: './barberos.css',

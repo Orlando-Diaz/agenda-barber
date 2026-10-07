@@ -2,7 +2,7 @@
   display: flex;
   gap: 0.5rem;
   overflow-x: auto;
-  padding: 0.25rem 1.25rem 0.75rem;
+  padding: 0.25rem 1.25rem 0.9rem;
   margin-inline: -1.25rem;
   scroll-snap-type: x proximity;
   scrollbar-width: thin;
@@ -17,7 +17,7 @@
   padding: 0.4rem 0;
   background: var(--blanco);
   border: 1.5px solid var(--junta);
-  border-radius: 4px;
+  border-radius: var(--radio);
   scroll-snap-align: start;
 }
 
@@ -32,14 +32,15 @@
 }
 
 .dia[aria-pressed='true'] {
-  background: var(--tinta);
-  border-color: var(--tinta);
+  background: var(--cobalto);
+  border-color: var(--cobalto-hondo);
+  box-shadow: 0 3px 0 var(--cobalto-hondo);
   color: var(--blanco);
 }
 
 .dia[aria-pressed='true'] .dia__semana,
 .dia[aria-pressed='true'] .dia__mes {
-  color: #c9d3de;
+  color: #dbe4fb;
 }
 
 .dia:disabled {

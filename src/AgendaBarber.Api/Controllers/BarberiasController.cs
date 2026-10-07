@@ -5,8 +5,16 @@ namespace AgendaBarber.Api.Controllers;
 
 [ApiController]
 [Route("api/barberias")]
-public class BarberiasController(ObtenerBarberiaPorSlug obtenerBarberiaPorSlug) : ControllerBase
+public class BarberiasController(ObtenerBarberiaPorSlug obtenerBarberiaPorSlug, ListarBarberias listarBarberias) : ControllerBase
 {
+    /// <summary>Directorio público: las barberías que ya reciben reservas.</summary>
+    [HttpGet]
+    public async Task<IActionResult> Listar(CancellationToken ct)
+    {
+        var barberias = await listarBarberias.EjecutarAsync(ct);
+        return Ok(barberias.Select(b => new { b.Nombre, b.Slug, b.Telefono }));
+    }
+
     [HttpGet("{slug}")]
     public async Task<IActionResult> ObtenerPorSlug(string slug, CancellationToken ct)
     {

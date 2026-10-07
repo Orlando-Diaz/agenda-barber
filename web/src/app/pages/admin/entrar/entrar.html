@@ -1,5 +1,11 @@
-<main class="pagina entrar">
-  <p class="entrar__marca rotulo">AgendaBarber</p>
+<header class="cabecera fondo-rotulo">
+  <div class="pagina cabecera__contenido">
+    <p class="entrar__marca rotulo letrero">AgendaBarber</p>
+  </div>
+</header>
+
+<main class="pagina hoja entrar">
+  <a class="atras" routerLink="/"><span aria-hidden="true">‹</span> Inicio</a>
   <h1>{{ modo() === 'entrar' ? 'Entra a tu agenda' : 'Crea tu barbería' }}</h1>
 
   <form (submit)="enviar($event, f)" #f novalidate>

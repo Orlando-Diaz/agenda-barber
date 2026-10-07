@@ -48,12 +48,12 @@
 }
 
 .baldosa[aria-pressed='true'] {
-  background: var(--tinta);
+  background: var(--cobalto);
   color: var(--blanco);
 }
 
 .baldosa[aria-pressed='true'] .baldosa__sufijo {
-  color: #c9d3de;
+  color: #dbe4fb;
 }
 
 /* La esquina roja marca la hora elegida */

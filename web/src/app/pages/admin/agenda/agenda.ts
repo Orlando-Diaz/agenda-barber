@@ -1,7 +1,8 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ApiService, mensajeDeError } from '../../../core/api.service';
 import { HoraLegible, aIso, desdeIso, fechaLarga, horaLegible, pesos, textoHora } from '../../../core/fechas';
-import { AccionCita, EstadoCita, ItemAgenda } from '../../../core/models';
+import { AccionCita, EstadoCita, ItemAgenda, ItemProximo } from '../../../core/models';
 import { SesionService } from '../../../core/sesion.service';
 import { enlaceWhatsapp } from '../../../core/whatsapp';
 
@@ -32,14 +33,38 @@ const ETIQUETA_ESTADO: Record<EstadoCita, string> = {
   NoAsistio: 'No asistió',
 };
 
+type Modo = 'dia' | 'proximas';
+
 @Component({
   selector: 'app-agenda',
+  imports: [NgTemplateOutlet],
   templateUrl: './agenda.html',
   styleUrl: './agenda.css',
 })
 export class Agenda implements OnInit {
   private readonly api = inject(ApiService);
   private readonly sesion = inject(SesionService);
+
+  protected readonly modo = signal<Modo>('proximas');
+  protected readonly proximas = signal<ItemProximo[] | null>(null);
+  protected readonly errorProximas = signal<string | null>(null);
+
+  /** Las próximas citas vigentes, agrupadas por día (el título de cada grupo es la fecha en palabras). */
+  protected readonly grupos = computed(() => {
+    const hoy = aIso(new Date());
+    const porDia = new Map<string, ItemProximo[]>();
+    for (const c of this.proximas() ?? []) {
+      if (c.estado === 'Cancelada' || c.estado === 'NoAsistio') continue;
+      porDia.set(c.fecha, [...(porDia.get(c.fecha) ?? []), c]);
+    }
+    return [...porDia.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([fecha, citas]) => ({
+        fecha,
+        titulo: `${fecha === hoy ? 'Hoy · ' : ''}${fechaLarga(fecha)}`,
+        citas: [...citas].sort((a, b) => a.horaInicio.localeCompare(b.horaInicio)),
+      }));
+  });
 
   protected readonly fecha = signal(aIso(new Date()));
   protected readonly citas = signal<ItemAgenda[] | null>(null);
@@ -72,7 +97,7 @@ export class Agenda implements OnInit {
   private consulta = 0;
 
   ngOnInit(): void {
-    this.cargar();
+    this.cargarProximas(); // al entrar se ve lo que viene; "Por día" carga la agenda del día al elegirlo
   }
 
   protected irA(iso: string): void {
@@ -91,6 +116,25 @@ export class Agenda implements OnInit {
 
   protected escribirFecha(evento: Event): void {
     this.irA((evento.target as HTMLInputElement).value);
+  }
+
+  protected elegirModo(modo: Modo): void {
+    if (modo === this.modo()) return;
+    this.modo.set(modo);
+    this.confirmandoCancelar.set(null);
+    this.errorAccion.set(null);
+    if (modo === 'proximas') this.cargarProximas();
+    else this.cargar();
+  }
+
+  protected cargarProximas(): void {
+    const slug = this.sesion.sesion()?.slug;
+    if (!slug) return;
+    this.errorProximas.set(null);
+    this.api.proximas(slug).subscribe({
+      next: (lista) => this.proximas.set(lista),
+      error: (e) => this.errorProximas.set(mensajeDeError(e, 'No pudimos cargar las próximas citas.')),
+    });
   }
 
   protected cargar(): void {
@@ -131,12 +175,12 @@ export class Agenda implements OnInit {
   }
 
   /** Recordatorio listo para enviar por WhatsApp al cliente. */
-  protected recordatorio(c: ItemAgenda): string | null {
+  protected recordatorio(c: ItemAgenda | ItemProximo): string | null {
     const s = this.sesion.sesion();
     if (!s) return null;
     const mensaje =
       `Hola ${c.clienteNombre}, te recordamos tu turno en ${s.nombreBarberia}: ${c.servicio} con ${c.barbero} ` +
-      `el ${fechaLarga(this.fecha())} a las ${textoHora(c.horaInicio)}. ¿Nos confirmas que vienes?`;
+      `el ${fechaLarga('fecha' in c ? c.fecha : this.fecha())} a las ${textoHora(c.horaInicio)}. ¿Nos confirmas que vienes?`;
     return enlaceWhatsapp(c.clienteTelefono, mensaje);
   }
 
@@ -171,7 +215,9 @@ export class Agenda implements OnInit {
     this.api.cambiarEstado(slug, c.id, accion).subscribe({
       next: (r) => {
         // Se actualiza solo esa cita con el estado que respondió la API (no hace falta recargar todo).
-        this.citas.update((lista) => lista?.map((x) => (x.id === c.id ? { ...x, estado: r.estado as EstadoCita } : x)) ?? null);
+        const nuevo = r.estado as EstadoCita;
+        this.citas.update((lista) => lista?.map((x) => (x.id === c.id ? { ...x, estado: nuevo } : x)) ?? null);
+        this.proximas.update((lista) => lista?.map((x) => (x.id === c.id ? { ...x, estado: nuevo } : x)) ?? null);
         this.ocupada.set(null);
       },
       error: (e) => {

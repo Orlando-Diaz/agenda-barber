@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { mensajeDeError } from '../../../core/api.service';
 import { SesionService } from '../../../core/sesion.service';
 
@@ -26,7 +26,8 @@ export class Entrar {
   private readonly sesion = inject(SesionService);
   private readonly router = inject(Router);
 
-  protected readonly modo = signal<Modo>('entrar');
+  /** /admin/entrar?crear abre directo el formulario para crear una barbería. */
+  protected readonly modo = signal<Modo>(inject(ActivatedRoute).snapshot.queryParamMap.has('crear') ? 'crear' : 'entrar');
   protected readonly enviando = signal(false);
   protected readonly error = signal<string | null>(null);
 

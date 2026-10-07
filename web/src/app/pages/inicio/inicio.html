@@ -1,16 +1,48 @@
-<main class="pagina inicio">
-  <h1 class="rotulo">AgendaBarber</h1>
-  <p class="lema">Reserva tu turno desde el celular, sin llamadas ni filas.</p>
+<header class="cabecera fondo-rotulo fondo-rotulo--vivo">
+  <div class="pagina cabecera__contenido">
+    <h1 class="rotulo letrero">AgendaBarber</h1>
+    <p class="lema">Elige tu barbería y reserva tu turno desde el celular, sin llamadas ni filas.</p>
+  </div>
+</header>
 
-  <form class="buscar" (submit)="ir($event)">
-    <label for="enlace">Enlace de tu barbería</label>
-    <div class="buscar__fila">
-      <input id="enlace" name="enlace" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
-        placeholder="el-patron" [value]="enlace()" (input)="escribir($event)" />
-      <button type="submit" [disabled]="!enlace().trim()">Ver horas</button>
+<main>
+  <section class="pagina hoja" aria-labelledby="t-lista">
+    <h2 id="t-lista">Barberías</h2>
+
+    @if (error(); as e) {
+      <p class="aviso-error" role="alert">{{ e }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></p>
+    } @else if (barberias() === null) {
+      <p class="vacio" role="status">Cargando barberías…</p>
+    } @else if (barberias()!.length === 0) {
+      <p class="vacio">Todavía no hay barberías recibiendo reservas. Si tienes una, créala abajo y aparecerá aquí.</p>
+    } @else {
+      @if (barberias()!.length > 5) {
+        <div class="buscar">
+          <label for="buscar" class="visualmente-oculto">Buscar barbería</label>
+          <input id="buscar" type="search" placeholder="Buscar por nombre" autocomplete="off" [value]="busqueda()" (input)="escribir($event)" />
+        </div>
+      }
+      <ul class="lista">
+        @for (b of visibles(); track b.slug) {
+          <li>
+            <a class="barberia" [routerLink]="['/b', b.slug]">
+              <span class="barberia__nombre rotulo">{{ b.nombre }}</span>
+              <span class="barberia__accion">Reservar</span>
+            </a>
+          </li>
+        } @empty {
+          <li class="vacio">Ninguna barbería se llama así. Revisa cómo la escribiste.</li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="pagina hoja dueno" aria-labelledby="t-dueno">
+    <h2 id="t-dueno">¿Tienes una barbería?</h2>
+    <p class="ayuda">Crea tu página de reservas en un minuto y ve la agenda del día desde el celular.</p>
+    <div class="acciones">
+      <a class="boton" routerLink="/admin/entrar" [queryParams]="{ crear: 1 }">Crear mi barbería</a>
+      <a class="boton boton--claro" routerLink="/admin">Entrar a mi panel</a>
     </div>
-    <p class="ayuda">Es el nombre que aparece al final del enlace que te compartió tu barbería.</p>
-  </form>
-
-  <p class="dueno">¿Tienes una barbería? <a routerLink="/admin">Entra a tu panel</a></p>
+  </section>
 </main>

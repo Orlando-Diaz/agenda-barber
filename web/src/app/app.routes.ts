@@ -36,6 +36,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/admin/servicios/servicios').then((m) => m.Servicios),
       },
       {
+        path: 'compartir',
+        title: 'Compartir · AgendaBarber',
+        loadComponent: () => import('./pages/admin/compartir/compartir').then((m) => m.Compartir),
+      },
+      {
         path: 'barberos',
         title: 'Barberos · AgendaBarber',
         loadComponent: () => import('./pages/admin/barberos/barberos').then((m) => m.Barberos),

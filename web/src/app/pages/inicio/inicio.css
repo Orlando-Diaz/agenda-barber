@@ -1,68 +1,129 @@
-.inicio {
-  padding: 4rem 1.25rem;
+.cabecera__contenido {
+  padding: 3rem 1.25rem 2.25rem;
 }
 
 h1 {
   font-size: clamp(3.5rem, 18vw, 6rem);
-  color: var(--cobalto);
 }
 
 .lema {
   margin-top: 1rem;
   font-size: 1.25rem;
   max-width: 24rem;
+  color: #dbe4fb;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1.1;
 }
 
 .buscar {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--junta);
+  margin-bottom: 1rem;
 }
 
-label {
-  display: block;
-  font-weight: 650;
-  margin-bottom: 0.5rem;
-}
-
-.buscar__fila {
-  display: flex;
-  gap: 0.5rem;
-}
-
-input {
-  flex: 1;
-  min-width: 0;
+.buscar input {
+  width: 100%;
   min-height: 3rem;
   padding: 0 0.9rem;
   background: var(--blanco);
   border: 1.5px solid var(--junta);
-  border-radius: 4px;
+  border-radius: var(--radio);
 }
 
-button {
-  min-height: 3rem;
-  padding: 0 1.25rem;
+.buscar input:focus {
+  border-color: var(--cobalto);
+}
+
+.lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+/* Cada barbería es un letrero que se toca entero */
+.barberia {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4rem;
+  padding: 0.6rem 1rem;
+  color: var(--tinta);
+  text-decoration: none;
+  background: var(--azulejo);
+  border: 1.5px solid var(--junta);
+  border-radius: var(--radio);
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.barberia:hover {
+  background: #eaf0fb;
+  border-color: var(--cobalto);
+}
+
+.barberia__nombre {
+  font-size: 1.9rem;
+  color: var(--cobalto);
+}
+
+.barberia__accion {
+  flex: none;
+  padding: 0.35rem 0.8rem;
   font-weight: 650;
-  color: var(--blanco);
-  background: var(--cobalto);
-  border: 0;
-  border-radius: 4px;
-}
-
-button:disabled {
-  background: var(--junta);
-  color: var(--suave);
-  cursor: not-allowed;
-}
-
-.ayuda {
-  margin-top: 0.75rem;
-  color: var(--suave);
   font-size: 0.9rem;
+  color: var(--blanco);
+  background: var(--poste);
+  border-radius: 999px;
 }
 
 .dueno {
-  margin-top: 3rem;
-  color: var(--suave);
+  margin-top: 1.5rem;
+}
+
+.enlace {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--cobalto);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.acciones {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.boton {
+  display: grid;
+  place-items: center;
+  min-height: 3rem;
+  padding: 0 1.25rem;
+  font-weight: 650;
+  text-decoration: none;
+  color: var(--blanco);
+  background: var(--cobalto);
+  border-radius: var(--radio);
+  box-shadow: 0 4px 0 var(--cobalto-hondo);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.boton:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--cobalto-hondo);
+}
+
+.boton--claro {
+  color: var(--cobalto);
+  background: var(--blanco);
+  border: 1.5px solid var(--cobalto);
+  box-shadow: 0 4px 0 var(--junta);
 }

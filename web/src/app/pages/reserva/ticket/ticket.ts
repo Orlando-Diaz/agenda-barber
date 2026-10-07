@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import { Component, ElementRef, afterNextRender, computed, input, output, viewChild } from '@angular/core';
 import { Barberia, CitaConfirmada } from '../../../core/models';
 import { enlaceWhatsapp } from '../../../core/whatsapp';
@@ -5,6 +6,7 @@ import { desdeIso, fechaLarga, horaLegible, nombreMes, nombreSemanaLarga, pesos,
 
 /** La confirmación: un tiquete de turno. */
 @Component({
+  imports: [RouterLink],
   selector: 'app-ticket',
   templateUrl: './ticket.html',
   styleUrl: './ticket.css',

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ApiService, mensajeDeError } from '../../core/api.service';
 import { fechaLarga, pesos, proximosDias, semanaCorta, textoHora } from '../../core/fechas';
@@ -9,15 +9,29 @@ import { TableroHoras } from './tablero-horas/tablero-horas';
 import { Ticket } from './ticket/ticket';
 import { TiraDias } from './tira-dias/tira-dias';
 
+type Paso = 'servicio' | 'barbero' | 'hora' | 'datos';
+
+const TITULOS: Record<Paso, string> = {
+  servicio: 'Elige un servicio',
+  barbero: 'Elige tu barbero',
+  hora: 'Elige día y hora',
+  datos: 'Tus datos',
+};
+
 @Component({
   selector: 'app-reserva',
-  imports: [TiraDias, TableroHoras, Ticket],
+  imports: [RouterLink, TiraDias, TableroHoras, Ticket],
   templateUrl: './reserva.html',
   styleUrl: './reserva.css',
 })
 export class Reserva implements OnInit {
   private readonly api = inject(ApiService);
+  private readonly router = inject(Router);
   private readonly slug = inject(ActivatedRoute).snapshot.paramMap.get('slug') ?? '';
+
+  // --- En qué paso va el cliente: se muestra una pantalla por paso ---
+  protected readonly paso = signal<Paso>('servicio');
+  protected readonly titulos = TITULOS;
 
   // --- Datos que vienen de la API ---
   protected readonly cargando = signal(true);
@@ -50,6 +64,21 @@ export class Reserva implements OnInit {
   protected readonly diasHabilitados = computed<ReadonlySet<number>>(
     () => new Set(this.barbero()?.horarios.map((h) => h.dia) ?? []),
   );
+  /** Los pasos que de verdad hay que hacer: si solo hay un servicio o un barbero, ese paso se salta. */
+  protected readonly pasos = computed<Paso[]>(() => {
+    const todos: Paso[] = ['servicio', 'barbero', 'hora', 'datos'];
+    const unSoloBarbero = this.barberos().filter((b) => b.horarios.length > 0).length === 1;
+    return todos.filter((p) => !(p === 'servicio' && this.servicios().length === 1) && !(p === 'barbero' && unSoloBarbero));
+  });
+  protected readonly indicePaso = computed(() => Math.max(0, this.pasos().indexOf(this.paso())));
+
+  /** Lo ya elegido, como recordatorio en la parte de arriba de cada paso. */
+  protected readonly contexto = computed(() => {
+    const partes: string[] = [];
+    if (this.paso() !== 'servicio' && this.servicio()) partes.push(this.servicio()!.nombre);
+    if ((this.paso() === 'hora' || this.paso() === 'datos') && this.barbero()) partes.push(`con ${this.barbero()!.nombre}`);
+    return partes.join(' ');
+  });
   protected readonly datosValidos = computed(() => {
     const digitos = this.telefono().replace(/\D/g, '');
     return this.nombre().trim().length >= 2 && digitos.length >= 7 && digitos.length <= 15;
@@ -91,6 +120,7 @@ export class Reserva implements OnInit {
         if (servicios.length === 1) this.servicioId.set(servicios[0].id);
         const atienden = barberos.filter((b) => b.horarios.length > 0);
         if (atienden.length === 1) this.barberoId.set(atienden[0].id);
+        this.paso.set(this.pasos()[0]);
         this.cargando.set(false);
       },
       error: (e) => {
@@ -107,9 +137,23 @@ export class Reserva implements OnInit {
   }
 
   // --- Elecciones del cliente ---
+  protected volver(): void {
+    const i = this.indicePaso();
+    if (i === 0) this.router.navigate(['/']);
+    else this.paso.set(this.pasos()[i - 1]);
+    window.scrollTo({ top: 0 });
+  }
+
+  private avanzar(): void {
+    const siguiente = this.pasos()[this.indicePaso() + 1];
+    if (siguiente) this.paso.set(siguiente);
+    window.scrollTo({ top: 0 });
+  }
+
   protected elegirServicio(id: string): void {
     this.servicioId.set(id);
     this.recargarHoras();
+    this.avanzar();
   }
 
   protected elegirBarbero(id: string): void {
@@ -118,6 +162,7 @@ export class Reserva implements OnInit {
     const d = this.dia();
     if (d && !this.diasHabilitados().has(this.dias.find((x) => x.iso === d)?.diaSemana ?? -1)) this.dia.set(null);
     this.recargarHoras();
+    this.avanzar();
   }
 
   protected elegirDia(iso: string): void {
@@ -128,6 +173,7 @@ export class Reserva implements OnInit {
   protected elegirHora(hora: HoraDisponible): void {
     this.horaSel.set(hora);
     this.errorReserva.set(null);
+    this.avanzar();
   }
 
   protected escribirNombre(e: Event): void {
@@ -198,6 +244,7 @@ export class Reserva implements OnInit {
           if (e instanceof HttpErrorResponse && e.status === 409) {
             // Otro cliente se llevó esa hora un instante antes: se muestran las horas actualizadas.
             this.errorReserva.set('Esa hora acaba de ser tomada. Elige otra.');
+            this.paso.set('hora');
             this.recargarHoras();
           } else {
             this.errorReserva.set(mensajeDeError(e, 'No pudimos reservar tu turno. Intenta de nuevo.'));
@@ -210,6 +257,7 @@ export class Reserva implements OnInit {
     this.cita.set(null);
     this.servicioId.set(this.servicios().length === 1 ? this.servicios()[0].id : null);
     this.dia.set(null);
+    this.paso.set(this.pasos()[0]);
     this.nombre.set('');
     this.telefono.set('');
     this.errorReserva.set(null);

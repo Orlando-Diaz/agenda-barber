@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ApiService, mensajeDeError } from '../../../core/api.service';
 import { pesos } from '../../../core/fechas';
@@ -5,6 +6,7 @@ import { Servicio } from '../../../core/models';
 import { SesionService } from '../../../core/sesion.service';
 
 @Component({
+  imports: [RouterLink],
   selector: 'app-servicios',
   templateUrl: './servicios.html',
   styleUrl: './servicios.css',

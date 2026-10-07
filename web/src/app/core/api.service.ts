@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from './api.config';
 import {
-  AccionCita, Barberia, Barbero, CitaCreada, HoraDisponible, ItemAgenda, NuevaCita, NuevoRegistro, NuevoServicio, Servicio, Sesion,
+  AccionCita, Barberia, BarberiaResumen, Barbero, CitaCreada, HoraDisponible, ItemAgenda, ItemProximo, NuevaCita, NuevoRegistro, NuevoServicio, Servicio, Sesion,
 } from './models';
 
 /** Todas las llamadas a la API pasan por aquí: los componentes no conocen las URLs. */
@@ -11,6 +11,11 @@ import {
 export class ApiService {
   private readonly http = inject(HttpClient);
   private readonly url = inject(API_URL);
+
+  /** Directorio público de la página principal. */
+  barberias(): Observable<BarberiaResumen[]> {
+    return this.http.get<BarberiaResumen[]>(`${this.url}/barberias`);
+  }
 
   barberia(slug: string): Observable<Barberia> {
     return this.http.get<Barberia>(`${this.url}/barberias/${slug}`);
@@ -46,6 +51,12 @@ export class ApiService {
   agenda(slug: string, fecha: string): Observable<ItemAgenda[]> {
     const params = new HttpParams().set('fecha', fecha);
     return this.http.get<ItemAgenda[]>(`${this.url}/barberias/${slug}/agenda`, { params });
+  }
+
+  /** Las citas desde hoy y los próximos días, de todos los días juntos. */
+  proximas(slug: string, dias = 14): Observable<ItemProximo[]> {
+    const params = new HttpParams().set('dias', dias);
+    return this.http.get<ItemProximo[]>(`${this.url}/barberias/${slug}/agenda/proximas`, { params });
   }
 
   crearServicio(slug: string, servicio: NuevoServicio): Observable<Servicio> {

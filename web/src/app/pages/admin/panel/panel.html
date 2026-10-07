@@ -1,7 +1,7 @@
-<header class="barra">
+<header class="barra fondo-rotulo">
   <div class="pagina barra__contenido">
     <div>
-      <p class="barra__rotulo rotulo">{{ sesion()?.nombreBarberia }}</p>
+      <p class="barra__rotulo rotulo letrero">{{ sesion()?.nombreBarberia }}</p>
       <a class="barra__publica" [routerLink]="['/b', sesion()?.slug]">Ver mi página de reservas</a>
     </div>
     <button type="button" class="barra__salir" (click)="sesionService.salir()">Salir</button>
@@ -10,6 +10,7 @@
     <a routerLink="/admin" routerLinkActive="activa" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Agenda</a>
     <a routerLink="/admin/servicios" routerLinkActive="activa" ariaCurrentWhenActive="page">Servicios</a>
     <a routerLink="/admin/barberos" routerLinkActive="activa" ariaCurrentWhenActive="page">Barberos</a>
+    <a routerLink="/admin/compartir" routerLinkActive="activa" ariaCurrentWhenActive="page">Compartir</a>
   </nav>
 </header>
 

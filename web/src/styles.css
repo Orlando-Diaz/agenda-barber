@@ -10,6 +10,10 @@
   --cobalto: #1d3fa8; /* color principal */
   --poste: #d7332b; /* rojo de poste: solo para marcar lo importante */
   --junta: #c5cfd6; /* líneas, como la junta entre azulejos */
+  --junta-suave: #e2e8e7; /* la junta del fondo de azulejo */
+  --cobalto-hondo: #14307f; /* sombra del cobalto: el borde inferior de los botones */
+  --poste-hondo: #a8231d;
+  --radio: 6px;
   --fuente: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ancho-pagina: 34rem;
 }
@@ -32,6 +36,12 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
+  /* Fondo de azulejo blanco: cuadrícula de juntas finas */
+  background-color: var(--azulejo);
+  background-image:
+    linear-gradient(var(--junta-suave) 1px, transparent 1px),
+    linear-gradient(90deg, var(--junta-suave) 1px, transparent 1px);
+  background-size: 2.75rem 2.75rem;
 }
 
 h1,
@@ -99,7 +109,7 @@ a {
 
 /* ---------- Formularios y bloques del panel del dueño ---------- */
 .seccion {
-  padding: 1.5rem 1.25rem 4rem;
+  padding-bottom: 1.75rem;
 }
 
 .seccion h1 {
@@ -138,7 +148,12 @@ a {
   padding: 0 0.9rem;
   background: var(--blanco);
   border: 1.5px solid var(--junta);
-  border-radius: 4px;
+  border-radius: var(--radio);
+}
+
+.campo input:not([type='checkbox']):focus,
+.campo select:focus {
+  border-color: var(--cobalto);
 }
 
 .campo fieldset {
@@ -173,12 +188,20 @@ a {
   color: var(--blanco);
   background: var(--cobalto);
   border: 0;
-  border-radius: 4px;
+  border-radius: var(--radio);
+  box-shadow: 0 4px 0 var(--cobalto-hondo);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--cobalto-hondo);
 }
 
 .btn:disabled {
   background: var(--junta);
   color: var(--suave);
+  box-shadow: 0 4px 0 #aab6be;
   cursor: wait;
 }
 
@@ -202,7 +225,7 @@ a {
   color: var(--cobalto);
   background: var(--blanco);
   border: 1.5px solid var(--cobalto);
-  border-radius: 4px;
+  border-radius: var(--radio);
   cursor: pointer;
 }
 
@@ -219,4 +242,92 @@ a {
 .btn-chico:disabled {
   opacity: 0.6;
   cursor: wait;
+}
+
+/* ---------- Identidad: rótulo de barbería ---------- */
+
+/* Cabecera azul con juntas de azulejo y la cinta del poste de barbero en el borde inferior */
+.fondo-rotulo {
+  position: relative;
+  padding-bottom: 0.7rem;
+  color: var(--blanco);
+  background-color: var(--cobalto);
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(180deg, rgb(255 255 255 / 0.05), transparent 60%);
+  background-size: 2.75rem 2.75rem, 2.75rem 2.75rem, 100% 100%;
+}
+
+.fondo-rotulo::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -3.11rem; /* un periodo de sobra a la izquierda: al correr, nunca se ve un hueco */
+  width: calc(100% + 3.11rem);
+  height: 0.7rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--poste) 0 0.55rem,
+    var(--blanco) 0.55rem 1.1rem,
+    var(--cobalto-hondo) 1.1rem 1.65rem,
+    var(--blanco) 1.65rem 2.2rem
+  );
+}
+
+.fondo-rotulo {
+  overflow-x: clip;
+}
+
+/* El poste gira: solo en las páginas públicas (el periodo horizontal es 2.2rem / cos 45° = 3.11rem) */
+.fondo-rotulo--vivo::after {
+  animation: girar-poste 2.4s linear infinite;
+}
+
+@keyframes girar-poste {
+  to {
+    transform: translateX(3.11rem);
+  }
+}
+
+/* El nombre como letrero pintado: sombra dura detrás de las letras */
+.letrero {
+  text-shadow: 0.07em 0.07em 0 var(--cobalto-hondo);
+}
+
+/* Hoja blanca sobre el azulejo */
+.hoja {
+  width: calc(100% - 1.5rem);
+  max-width: var(--ancho-pagina);
+  margin: 1rem auto 0;
+  padding: 1.25rem;
+  background: var(--blanco);
+  border: 1px solid var(--junta);
+  border-radius: 8px;
+  box-shadow: 0 3px 0 var(--junta);
+}
+
+app-root {
+  display: block;
+  padding-bottom: 2.5rem;
+}
+
+/* Botón "atrás" que va arriba de cada pantalla */
+.atras {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.5rem;
+  margin-bottom: 1rem;
+  padding: 0 0.9rem 0 0.7rem;
+  font-weight: 650;
+  text-decoration: none;
+  color: var(--cobalto);
+  background: transparent;
+  border: 1.5px solid var(--cobalto);
+  border-radius: var(--radio);
+}
+
+.atras:hover {
+  background: #eaf0fb;
 }

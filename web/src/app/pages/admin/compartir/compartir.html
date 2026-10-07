@@ -1,0 +1,24 @@
+<main class="pagina hoja seccion">
+  <a class="atras" routerLink="/admin"><span aria-hidden="true">‹</span> Agenda</a>
+  <h1 class="rotulo">Compartir</h1>
+  <p class="intro">Este es el enlace de {{ nombre }}. Tus clientes lo abren, eligen su turno y lo ves en tu agenda.</p>
+
+  <div class="enlace-caja">
+    <input class="enlace-texto" type="text" readonly [value]="enlace" aria-label="Enlace para tus clientes" (focus)="$any($event.target).select()" />
+    <button type="button" class="btn" (click)="copiar()">{{ copiado() ? 'Copiado' : 'Copiar enlace' }}</button>
+  </div>
+  @if (errorCopiar()) {
+    <p class="aviso-error" role="alert">No pudimos copiarlo solo. Toca el enlace y cópialo a mano.</p>
+  }
+
+  <a class="boton-wa" [href]="whatsapp" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+
+  <h2>Código QR para el local</h2>
+  <p class="intro">Imprímelo y pégalo en el espejo o en la puerta: el cliente lo escanea con la cámara y reserva.</p>
+  @if (qr(); as imagen) {
+    <img class="qr" [src]="imagen" [alt]="'Código QR que abre ' + enlace" width="260" height="260" />
+    <a class="btn descargar" [href]="imagen" [attr.download]="archivoQr">Descargar QR</a>
+  } @else {
+    <p class="vacio">Preparando el código…</p>
+  }
+</main>

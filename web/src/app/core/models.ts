@@ -7,6 +7,13 @@ export interface Barberia {
   telefono: string | null;
 }
 
+/** Una barbería en el directorio de la página principal. */
+export interface BarberiaResumen {
+  nombre: string;
+  slug: string;
+  telefono: string | null;
+}
+
 export interface Servicio {
   id: string;
   nombre: string;
@@ -91,6 +98,11 @@ export interface ItemAgenda {
   clienteTelefono: string;
   precio: number;
   estado: EstadoCita;
+}
+
+/** Una cita de la lista de próximas: lo mismo que la agenda, más el día (aaaa-mm-dd). */
+export interface ItemProximo extends ItemAgenda {
+  fecha: string;
 }
 
 export interface NuevoServicio {

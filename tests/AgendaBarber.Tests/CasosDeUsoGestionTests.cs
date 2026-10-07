@@ -23,6 +23,8 @@ public class CasosDeUsoGestionTests
             Task.FromResult(barberias.FirstOrDefault(b => b.Slug == slug));
         public Task<Barberia?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default) =>
             Task.FromResult(barberias.FirstOrDefault(b => b.Id == id));
+        public Task<IReadOnlyList<Barberia>> ListarReservablesAsync(CancellationToken ct = default) =>
+            Task.FromResult<IReadOnlyList<Barberia>>([]);
     }
 
     private sealed class ServiciosFalsos(params Servicio[] servicios) : IServicioRepositorio
