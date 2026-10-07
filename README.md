@@ -1,5 +1,7 @@
 # AgendaBarber
 
+**Demo en línea:** https://agenda-barber-liard.vercel.app (la API gratuita se duerme; la primera carga puede tardar hasta un minuto).
+
 Reservas en línea para barberías. Cada barbería tiene su página pública (`/b/{slug}`) donde los clientes reservan sin crear cuenta, y un panel privado donde el dueño ve su agenda y administra servicios, barberos y horarios.
 
 **Stack:** .NET 10 (ASP.NET Core, EF Core) · PostgreSQL 16 · Angular 21 · JWT
