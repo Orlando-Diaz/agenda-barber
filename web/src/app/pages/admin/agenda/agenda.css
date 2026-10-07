@@ -4,38 +4,132 @@ h1 {
   margin-bottom: 1rem;
 }
 
-/* ---------- Navegación de días ---------- */
-.dias {
+/* ---------- Calendario ---------- */
+.calendario__mes {
   display: grid;
   grid-template-columns: 3rem 1fr 3rem;
   gap: 0.5rem;
-  align-items: stretch;
+  align-items: center;
+  margin-bottom: 0.75rem;
 }
 
-.dias__centro {
-  display: grid;
-  gap: 0.35rem;
+.calendario__titulo {
   text-align: center;
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.1;
 }
 
-.dias__titulo {
+.calendario__titulo::first-letter {
+  text-transform: uppercase;
+}
+
+.rejilla {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.rejilla__semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+
+.letra {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--suave);
+}
+
+.dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  aspect-ratio: 1;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--tinta);
+  background: var(--azulejo);
+  border: 1.5px solid var(--junta);
+  border-radius: 8px;
+}
+
+.dia--fuera {
+  opacity: 0.4;
+}
+
+.dia--hoy {
+  border-color: var(--poste);
+  box-shadow: inset 0 0 0 1px var(--poste);
+}
+
+.dia--elegido {
+  color: var(--texto-claro);
+  background: var(--accion);
+  border-color: var(--accion);
+  box-shadow: 0 3px 0 var(--cobalto-hondo);
+}
+
+.dia__numero {
+  line-height: 1.1;
+}
+
+.dia__citas {
+  min-width: 1.05rem;
+  padding: 0 0.25rem;
+  font-size: 0.65rem;
+  line-height: 1.05rem;
+  text-align: center;
+  color: var(--texto-claro);
+  background: var(--noche);
+  border-radius: 999px;
+}
+
+.dia--elegido .dia__citas {
+  background: var(--texto-claro);
+  color: var(--noche);
+}
+
+.dia--elegido .dia__citas--pendiente {
+  background: var(--poste);
+  color: var(--texto-claro);
+}
+
+.dia__citas--pendiente {
+  background: var(--poste);
+}
+
+.leyenda {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--suave);
+}
+
+.leyenda__punto {
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--poste);
+  border-radius: 50%;
+}
+
+.dia-titulo {
+  margin-top: 1.25rem;
   font-stretch: 75%;
   font-weight: 800;
   font-size: 1.35rem;
   line-height: 1.15;
 }
 
-.dias__titulo::first-letter {
+.dia-titulo::first-letter {
   text-transform: uppercase;
-}
-
-.dias__salto input {
-  width: 100%;
-  min-height: 2.25rem;
-  padding: 0 0.5rem;
-  background: var(--blanco);
-  border: 1.5px solid var(--junta);
-  border-radius: var(--radio);
 }
 
 .paso {
@@ -211,42 +305,3 @@ h1 {
 }
 
 /* ---------- Por día / Próximas ---------- */
-.modos {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.25rem;
-  margin-bottom: 1.25rem;
-  padding: 0.25rem;
-  background: var(--azulejo);
-  border: 1.5px solid var(--junta);
-  border-radius: var(--radio);
-}
-
-.modo {
-  min-height: 2.5rem;
-  font-weight: 650;
-  color: var(--suave);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-}
-
-.modo[aria-pressed='true'] {
-  color: var(--texto-claro);
-  background: var(--accion);
-  box-shadow: 0 2px 0 var(--cobalto-hondo);
-}
-
-.grupo__titulo {
-  margin: 1.5rem 0 0;
-  padding-bottom: 0.4rem;
-  font-stretch: 75%;
-  font-weight: 800;
-  font-size: 1.25rem;
-  line-height: 1.1;
-  border-bottom: 3px solid var(--poste);
-}
-
-.grupo__titulo::first-letter {
-  text-transform: uppercase;
-}

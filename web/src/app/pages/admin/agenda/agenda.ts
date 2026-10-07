@@ -33,7 +33,18 @@ const ETIQUETA_ESTADO: Record<EstadoCita, string> = {
   NoAsistio: 'No asistió',
 };
 
-type Modo = 'dia' | 'proximas';
+const NOMBRE_MES = new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' });
+const LETRAS_SEMANA = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+
+interface Celda {
+  iso: string;
+  numero: number;
+  delMes: boolean;
+  esHoy: boolean;
+  /** Citas vigentes ese día y cuántas están por confirmar (solo se conocen de hoy en adelante). */
+  total: number;
+  pendientes: number;
+}
 
 @Component({
   selector: 'app-agenda',
@@ -45,25 +56,54 @@ export class Agenda implements OnInit {
   private readonly api = inject(ApiService);
   private readonly sesion = inject(SesionService);
 
-  protected readonly modo = signal<Modo>('proximas');
+  protected readonly letrasSemana = LETRAS_SEMANA;
   protected readonly proximas = signal<ItemProximo[] | null>(null);
   protected readonly errorProximas = signal<string | null>(null);
 
-  /** Las próximas citas vigentes, agrupadas por día (el título de cada grupo es la fecha en palabras). */
-  protected readonly grupos = computed(() => {
-    const hoy = aIso(new Date());
-    const porDia = new Map<string, ItemProximo[]>();
+  /** Primer día del mes que se muestra en el calendario (aaaa-mm-01). */
+  protected readonly mes = signal(aIso(new Date()).slice(0, 8) + '01');
+  protected readonly tituloMes = computed(() => NOMBRE_MES.format(desdeIso(this.mes())));
+
+  /** Cuántas citas vigentes hay por día, para pintar el número en cada casilla. */
+  private readonly conteo = computed(() => {
+    const mapa = new Map<string, { total: number; pendientes: number }>();
     for (const c of this.proximas() ?? []) {
       if (c.estado === 'Cancelada' || c.estado === 'NoAsistio') continue;
-      porDia.set(c.fecha, [...(porDia.get(c.fecha) ?? []), c]);
+      const x = mapa.get(c.fecha) ?? { total: 0, pendientes: 0 };
+      x.total++;
+      if (c.estado === 'Pendiente') x.pendientes++;
+      mapa.set(c.fecha, x);
     }
-    return [...porDia.entries()]
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([fecha, citas]) => ({
-        fecha,
-        titulo: `${fecha === hoy ? 'Hoy · ' : ''}${fechaLarga(fecha)}`,
-        citas: [...citas].sort((a, b) => a.horaInicio.localeCompare(b.horaInicio)),
-      }));
+    return mapa;
+  });
+
+  /** Las semanas del mes (lunes a domingo), con los días de relleno del mes anterior y siguiente. */
+  protected readonly semanas = computed(() => {
+    const primero = desdeIso(this.mes());
+    const inicio = new Date(primero);
+    inicio.setDate(1 - ((primero.getDay() + 6) % 7)); // retrocede hasta el lunes
+    const hoy = aIso(new Date());
+    const conteo = this.conteo();
+    const semanas: Celda[][] = [];
+    const cursor = new Date(inicio);
+    do {
+      const semana: Celda[] = [];
+      for (let i = 0; i < 7; i++) {
+        const iso = aIso(cursor);
+        const n = conteo.get(iso);
+        semana.push({
+          iso,
+          numero: cursor.getDate(),
+          delMes: cursor.getMonth() === primero.getMonth(),
+          esHoy: iso === hoy,
+          total: n?.total ?? 0,
+          pendientes: n?.pendientes ?? 0,
+        });
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      semanas.push(semana);
+    } while (cursor.getMonth() === primero.getMonth());
+    return semanas;
   });
 
   protected readonly fecha = signal(aIso(new Date()));
@@ -97,34 +137,32 @@ export class Agenda implements OnInit {
   private consulta = 0;
 
   ngOnInit(): void {
-    this.cargarProximas(); // al entrar se ve lo que viene; "Por día" carga la agenda del día al elegirlo
+    this.cargarProximas(); // los números del calendario
+    this.cargar(); // y las citas de hoy
   }
 
   protected irA(iso: string): void {
     if (!iso || iso === this.fecha()) return;
     this.fecha.set(iso);
+    this.mes.set(iso.slice(0, 8) + '01');
     this.confirmandoCancelar.set(null);
     this.errorAccion.set(null);
     this.cargar();
   }
 
-  protected mover(dias: number): void {
-    const f = desdeIso(this.fecha());
-    f.setDate(f.getDate() + dias);
-    this.irA(aIso(f));
+  protected cambiarMes(delta: number): void {
+    const f = desdeIso(this.mes());
+    f.setMonth(f.getMonth() + delta, 1);
+    this.mes.set(aIso(f));
   }
 
-  protected escribirFecha(evento: Event): void {
-    this.irA((evento.target as HTMLInputElement).value);
+  protected esElegido(iso: string): boolean {
+    return iso === this.fecha();
   }
 
-  protected elegirModo(modo: Modo): void {
-    if (modo === this.modo()) return;
-    this.modo.set(modo);
-    this.confirmandoCancelar.set(null);
-    this.errorAccion.set(null);
-    if (modo === 'proximas') this.cargarProximas();
-    else this.cargar();
+  protected etiquetaCelda(c: Celda): string {
+    const citas = c.total === 0 ? 'sin citas' : c.total === 1 ? '1 cita' : `${c.total} citas`;
+    return `${fechaLarga(c.iso)}, ${citas}`;
   }
 
   protected cargarProximas(): void {

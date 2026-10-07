@@ -1,42 +1,43 @@
 <main class="pagina hoja agenda">
   <h1 class="rotulo">Agenda</h1>
 
-  <div class="modos" role="group" aria-label="Qué ver">
-    <button type="button" class="modo" [attr.aria-pressed]="modo() === 'dia'" (click)="elegirModo('dia')">Por día</button>
-    <button type="button" class="modo" [attr.aria-pressed]="modo() === 'proximas'" (click)="elegirModo('proximas')">Próximas</button>
-  </div>
+  <section class="calendario" aria-label="Calendario de citas">
+    <div class="calendario__mes">
+      <button type="button" class="paso" (click)="cambiarMes(-1)" aria-label="Mes anterior">‹</button>
+      <p class="calendario__titulo" aria-live="polite">{{ tituloMes() }}</p>
+      <button type="button" class="paso" (click)="cambiarMes(1)" aria-label="Mes siguiente">›</button>
+    </div>
 
-  @if (modo() === 'proximas') {
+    <div class="rejilla" role="grid">
+      <div class="rejilla__semana rejilla__semana--letras" role="row" aria-hidden="true">
+        @for (l of letrasSemana; track $index) {
+          <span class="letra">{{ l }}</span>
+        }
+      </div>
+      @for (semana of semanas(); track semana[0].iso) {
+        <div class="rejilla__semana" role="row">
+          @for (d of semana; track d.iso) {
+            <button type="button" class="dia" role="gridcell"
+              [class.dia--fuera]="!d.delMes" [class.dia--hoy]="d.esHoy" [class.dia--elegido]="esElegido(d.iso)"
+              [attr.aria-label]="etiquetaCelda(d)" [attr.aria-pressed]="esElegido(d.iso)" (click)="irA(d.iso)">
+              <span class="dia__numero">{{ d.numero }}</span>
+              @if (d.total > 0) {
+                <span class="dia__citas" [class.dia__citas--pendiente]="d.pendientes > 0">{{ d.total }}</span>
+              }
+            </button>
+          }
+        </div>
+      }
+    </div>
     @if (errorProximas(); as e) {
       <p class="error" role="alert">{{ e }} <button type="button" class="enlace" (click)="cargarProximas()">Reintentar</button></p>
-    } @else if (proximas() === null) {
-      <p class="vacio">Cargando próximas citas…</p>
-    } @else if (grupos().length === 0) {
-      <p class="vacio">No hay citas próximas. Cuando alguien reserve, aparecerá aquí.</p>
-    } @else {
-      @for (g of grupos(); track g.fecha) {
-        <section class="grupo" [attr.aria-label]="g.titulo">
-          <h2 class="grupo__titulo">{{ g.titulo }}</h2>
-          <ul class="lista">
-            @for (c of g.citas; track c.id) {
-              <ng-container [ngTemplateOutlet]="tarjeta" [ngTemplateOutletContext]="{ $implicit: c }" />
-            }
-          </ul>
-        </section>
-      }
     }
-  } @else {
-  <div class="dias" role="group" aria-label="Cambiar de día">
-    <button type="button" class="paso" (click)="mover(-1)" aria-label="Día anterior">‹</button>
-    <div class="dias__centro">
-      <p class="dias__titulo" aria-live="polite">{{ titulo() }}</p>
-      <label class="dias__salto">
-        <span class="visualmente-oculto">Ir a una fecha</span>
-        <input type="date" [value]="fecha()" (change)="escribirFecha($event)" />
-      </label>
-    </div>
-    <button type="button" class="paso" (click)="mover(1)" aria-label="Día siguiente">›</button>
-  </div>
+    <p class="leyenda"><span class="leyenda__punto"></span> con citas por confirmar</p>
+  </section>
+
+  <h2 class="dia-titulo">
+    {{ esHoy() ? 'Hoy · ' : '' }}{{ titulo() }}
+  </h2>
   @if (!esHoy()) {
     <button type="button" class="enlace" (click)="irA(hoyIso())">Volver a hoy</button>
   }
@@ -64,7 +65,6 @@
         }
       </ul>
     }
-  }
   }
 </main>
 

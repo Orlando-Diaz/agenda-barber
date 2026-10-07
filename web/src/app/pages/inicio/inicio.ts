@@ -39,8 +39,12 @@ export class Inicio implements OnInit {
     });
   }
 
+  protected arriba(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   protected foto(b: BarberiaResumen): string | null {
-    return b.fotoVersion === null ? null : this.api.urlFoto(b.slug, b.fotoVersion);
+    return b.fotoVersion == null ? null : this.api.urlFoto(b.slug, b.fotoVersion);
   }
 
   protected escribir(evento: Event): void {

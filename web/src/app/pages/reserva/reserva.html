@@ -16,7 +16,7 @@
 } @else if (barberia(); as b) {
   <header class="cabecera fondo-rotulo fondo-rotulo--vivo">
     <div class="pagina cabecera__contenido">
-      <h1 class="rotulo letrero">{{ b.nombre }}</h1>
+      <h1 class="rotulo letrero"><a class="titulo-enlace" routerLink="/">{{ b.nombre }}</a></h1>
       @if (b.direccion) {
         <p class="direccion">{{ b.direccion }}</p>
       }

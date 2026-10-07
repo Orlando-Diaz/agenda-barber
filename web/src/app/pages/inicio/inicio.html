@@ -1,12 +1,12 @@
 <header class="cabecera fondo-rotulo fondo-rotulo--vivo">
   <div class="pagina cabecera__contenido">
-    <h1 class="rotulo letrero">AgendaBarber</h1>
+    <h1 class="rotulo letrero"><a class="titulo-enlace" routerLink="/" (click)="arriba()">AgendaBarber</a></h1>
     <p class="lema">Elige tu barbería y reserva tu turno desde el celular, sin llamadas ni filas.</p>
   </div>
 </header>
 
 <main>
-  <section class="pagina hoja" aria-labelledby="t-lista">
+  <section class="pagina hoja lista-ancha" aria-labelledby="t-lista">
     <h2 id="t-lista">Barberías</h2>
 
     @if (error(); as e) {
@@ -26,7 +26,7 @@
         @for (b of visibles(); track b.slug) {
           <li>
             <a class="tarjeta" [routerLink]="['/b', b.slug]">
-              <span class="tarjeta__foto" [class.tarjeta__foto--vacia]="!b.fotoVersion">
+              <span class="tarjeta__foto" [class.tarjeta__foto--vacia]="b.fotoVersion == null">
                 @if (foto(b); as src) {
                   <img [src]="src" alt="" loading="lazy" width="600" height="338" />
                 } @else {
@@ -42,7 +42,7 @@
                   <span class="tarjeta__descripcion">{{ b.descripcion }}</span>
                 }
                 <span class="tarjeta__pie">
-                  @if (b.precioDesde !== null) {
+                  @if (b.precioDesde != null) {
                     <span class="tarjeta__precio">Desde {{ b.precioDesde | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
                   } @else {
                     <span></span>
