@@ -48,7 +48,7 @@
                 }
                 <span class="tarjeta__pie">
                   @if (b.precioDesde != null) {
-                    <span class="tarjeta__precio">Desde {{ b.precioDesde | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+                    <span class="tarjeta__precio">Desde {{ precio(b.precioDesde) }}</span>
                   } @else {
                     <span></span>
                   }

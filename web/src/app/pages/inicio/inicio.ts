@@ -1,7 +1,7 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService, mensajeDeError } from '../../core/api.service';
+import { pesos } from '../../core/fechas';
 import { BarberiaResumen } from '../../core/models';
 
 /** Para buscar sin importar mayúsculas ni tildes: "patron" encuentra "El Patrón". */
@@ -11,7 +11,7 @@ function limpiar(texto: string): string {
 
 @Component({
   selector: 'app-inicio',
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css',
 })
@@ -50,6 +50,10 @@ export class Inicio implements OnInit {
         this.error.set(mensajeDeError(e, 'No pudimos cargar las barberías.'));
       },
     });
+  }
+
+  protected precio(valor: number): string {
+    return pesos(valor);
   }
 
   protected arriba(): void {

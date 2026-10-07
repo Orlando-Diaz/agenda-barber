@@ -1,12 +1,43 @@
 # AgendaBarber
 
-**Demo en línea:** https://agenda-barber-liard.vercel.app (la API gratuita se duerme; la primera carga puede tardar hasta un minuto).
+Reservas en línea para barberías: el cliente elige su turno desde el celular, sin crear cuenta y sin llamar; el dueño ve su agenda en un calendario y administra servicios, barberos, horarios y el perfil de su local.
 
-Reservas en línea para barberías. Cada barbería tiene su página pública (`/b/{slug}`) donde los clientes reservan sin crear cuenta, y un panel privado donde el dueño ve su agenda y administra servicios, barberos y horarios.
+**Demo en línea:** https://agenda-barber-liard.vercel.app
+La API corre en un plan gratuito que se duerme tras 15 minutos sin uso: la primera carga puede tardar hasta un minuto.
 
-**Stack:** .NET 10 (ASP.NET Core, EF Core) · PostgreSQL 16 · Angular 21 · JWT
+![AgendaBarber: lista de barberías, reserva paso a paso, agenda en calendario y modo oscuro](docs/img/portada.png)
+
+*Capturas con datos de demostración.*
+
+**Stack:** .NET 10 (ASP.NET Core, EF Core) · PostgreSQL 16 · Angular 21 · JWT · Docker
+
+## Qué puede hacer
+
+**El cliente** (sin cuenta):
+- Ve la lista de barberías con foto, dirección y precio desde.
+- Reserva en 4 pasos con botón **Volver**: servicio, barbero, día y hora, datos.
+- Recibe un tiquete con su turno. Si alguien tomó esa hora antes, se le avisa y elige otra.
+
+**El dueño** (con cuenta):
+- Crea su barbería y obtiene su enlace y un código QR para pegar en el local.
+- Agenda en **calendario mensual**: cada día muestra cuántas citas tiene y en rojo las que faltan por confirmar. Al tocar un día ve sus citas y puede confirmar, cancelar, marcar atendida o no asistió, y mandar un recordatorio por WhatsApp.
+- Administra servicios, barberos y horarios de trabajo (editar y quitar).
+- Perfil del local: foto de portada, dirección y descripción.
+
+Además: modo claro y oscuro, y diseño pensado primero para el celular.
+
+| Reserva paso a paso | Agenda del dueño | Perfil del local | Modo oscuro |
+|---|---|---|---|
+| <img src="docs/img/reserva.png" width="200"> | <img src="docs/img/agenda.png" width="200"> | <img src="docs/img/perfil.png" width="200"> | <img src="docs/img/agenda-oscuro.png" width="200"> |
 
 ## Arquitectura
+
+```mermaid
+flowchart LR
+    N["Navegador<br/>cliente o dueño"] --> W["Angular 21<br/>Vercel"]
+    W -->|"HTTPS + JWT"| A["API ASP.NET Core 10<br/>Render · Docker"]
+    A --> D[("PostgreSQL 16<br/>Neon")]
+```
 
 ```
 src/
@@ -19,12 +50,35 @@ web/                           Angular: página pública de reservas y panel del
 scripts/                       Pruebas manuales de la API en PowerShell
 ```
 
-Decisiones que vale la pena conocer:
+Las dependencias van hacia adentro: el dominio no conoce a EF Core ni a ASP.NET, y los casos de uso hablan con interfaces que implementa la infraestructura.
 
-- **Sin doble reserva:** una restricción de exclusión en PostgreSQL impide que dos citas del mismo barbero se crucen, aunque dos clientes reserven al mismo milisegundo (responde 409).
-- **Multi-barbería:** una política de autorización compara la barbería de la URL con la del token; un dueño nunca toca datos de otra barbería.
+### Decisiones que vale la pena conocer
+
+- **Sin doble reserva:** una restricción de exclusión en PostgreSQL (`btree_gist` + rangos de tiempo) impide que dos citas del mismo barbero se crucen, aunque dos clientes reserven al mismo milisegundo. La API lo traduce a un 409 con un mensaje claro. La garantía vive en la base de datos, no solo en el código.
+- **Multi-barbería con aislamiento:** una política de autorización compara la barbería de la URL con la del token; un dueño nunca toca datos de otra barbería.
+- **Seguridad básica:** contraseñas con PBKDF2, tokens JWT, límite de 10 intentos por minuto por IP en login y registro, y la API se niega a arrancar en producción con la clave de desarrollo.
 - **Quitar = desactivar:** servicios y barberos no se borran, se marcan inactivos; las citas pasadas conservan su información.
-- **Horas:** se guardan en UTC y se muestran en `America/Bogota`.
+- **Horas:** se guardan en UTC y se muestran en `America/Bogota`. El reloj se inyecta (`TimeProvider`), así las reglas de tiempo se prueban sin esperar.
+- **Fotos en la base de datos:** van en una tabla aparte (`fotos_barberia`), para que leer una barbería no cargue la imagen. La web las reduce en el navegador antes de subirlas y las pide con un parámetro de versión para refrescar la caché. Así el servidor no depende de archivos locales, que los servidores gratuitos borran al reiniciar.
+- **Frontend:** Angular con componentes independientes, señales (`signal`), rutas con carga diferida y un servicio central para las llamadas a la API.
+
+### API (resumen)
+
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/api/barberias`, `/api/barberias/{slug}`, `/foto` | público |
+| GET | `/api/barberias/{slug}/servicios`, `/barberos`, `/disponibilidad` | público |
+| POST | `/api/barberias/{slug}/citas` | público |
+| POST | `/api/auth/registro`, `/api/auth/login` | público (con límite de intentos) |
+| GET | `/api/barberias/{slug}/agenda`, `/agenda/proximas` | dueño |
+| POST | `/api/barberias/{slug}/citas/{id}/confirmar \| cancelar \| atendida \| no-asistio` | dueño |
+| POST, PUT, DELETE | servicios, barberos, horarios, `/perfil`, `/foto` | dueño |
+
+## Ideas para seguir
+
+- Avisos automáticos por correo o WhatsApp (hoy el recordatorio se envía con un clic).
+- Cuentas opcionales para clientes frecuentes y vista "mis turnos".
+- Reservas recurrentes y bloqueos de agenda (vacaciones, almuerzo).
 
 ## Correr en local
 
